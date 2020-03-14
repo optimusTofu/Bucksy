@@ -1,7 +1,10 @@
+const Discord = require("discord.js");
+const client = new Discord.Client();
 const puppeteer = require("puppeteer");
 const CronJob = require('cron').CronJob;
+const auth = require("../../private/auth.json");
 
-let scrape = (async () => {
+const scrape = (async (guilds) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto("https://www.reddit.com/r/InsightfulQuestions/");
@@ -17,20 +20,36 @@ let scrape = (async () => {
 
     let question = questions[Math.floor(Math.random() * questions.length)];
 
+    let guild = guilds.get("538597663826771968");
+
     let qotdMsg = new Discord.RichEmbed()
         .setColor(0x009900)
         .setTitle(`Question Of The Day`)
-        .send(question);
+        .setDescription(question);
 
-    let channel = client.channels.get('name', 'general-development');
-
-    channel.send(qotdMsg);
+    guild.channels.get("582228584408678400").send(qotdMsg);
 
     await browser.close();
 });
 
-let job = new CronJob('0 8 * * *', function() {
-    scrape();
-}, null, true, 'America/New_York');
+// CRON Ranges
+/*
+    Seconds: 0-59
+    Minutes: 0-59
+    Hours: 0-23
+    Day of Month: 1-31
+    Months: 0-11 (Jan-Dec)
+    Day of Week: 0-6 (Sun-Sat)
+*/
 
-job.start();
+const start = (bot) => {
+    let job = new CronJob('0 23 5 * * *', function() {
+        scrape(bot.guilds);
+    }, null, true, 'America/New_York');
+
+    job.start();
+};
+
+module.exports = {
+    start
+};

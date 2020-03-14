@@ -4,11 +4,13 @@ const Discord = require("discord.js");
 const apiai = require("apiai")("9ac28c4b9a0043b18b779a2ce6b8eef3");
 const listen = require("./modules/controllers/command.js").listen;
 const greeting = require("./modules/controllers/greeting.js");
+const qotd = require("./modules/controllers/qotd.js");
 
 const bot = new Discord.Client();
 
 bot.on('ready', () => {
   console.log(`Logged in as ${bot.user.tag} - ${bot.user.username}!`);
+  qotd.start(bot);
 });
 
 bot.on('message', msg => {
