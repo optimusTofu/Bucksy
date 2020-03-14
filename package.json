@@ -1,0 +1,25 @@
+{
+  "name": "bucksybot",
+  "version": "0.0.1",
+  "description": "A bot to help manage team roles on a Pokemon Go Discord server.",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "discord",
+    "pokemon",
+    "pogo",
+    "pokemon",
+    "go",
+    "teams",
+    "roles"
+  ],
+  "author": "0x736a64",
+  "license": "ISC",
+  "dependencies": {
+    "apiai": "^4.0.3",
+    "discord.js": "^11.4.2"
+  }
+}

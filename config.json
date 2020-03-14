@@ -1,0 +1,6 @@
+{
+    "botName": "Bucksy",
+    "verifiedRole": true,
+    "prefix": ["$", "!", "."],
+    "teams": ["harmony", "instinct", "mystic", "valor"]
+}
