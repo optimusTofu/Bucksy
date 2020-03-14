@@ -1,5 +1,10 @@
 {
     "botName": "Bucksy",
+    "guildID": "538597663826771968",
+    "channels": {
+        "qotd": "582228584408678400"
+    },
+    "qotdTime": "0 0 8 * * *",
     "verifiedRole": true,
     "prefix": ["$", "!", "."],
     "teams": ["harmony", "instinct", "mystic", "valor"]

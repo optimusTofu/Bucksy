@@ -3,6 +3,7 @@ const client = new Discord.Client();
 const puppeteer = require("puppeteer");
 const CronJob = require('cron').CronJob;
 const auth = require("../../private/auth.json");
+const config = require("../../config.json");
 
 const scrape = (async (guilds) => {
     const browser = await puppeteer.launch();
@@ -20,14 +21,14 @@ const scrape = (async (guilds) => {
 
     let question = questions[Math.floor(Math.random() * questions.length)];
 
-    let guild = guilds.get("538597663826771968");
+    let guild = guilds.get(config.guildID);
 
     let qotdMsg = new Discord.RichEmbed()
         .setColor(0x009900)
         .setTitle(`Question Of The Day`)
         .setDescription(question);
 
-    guild.channels.get("582228584408678400").send(qotdMsg);
+    guild.channels.get(config.channels.qotd).send(qotdMsg);
 
     await browser.close();
 });
@@ -43,7 +44,7 @@ const scrape = (async (guilds) => {
 */
 
 const start = (bot) => {
-    let job = new CronJob('0 23 5 * * *', function() {
+    let job = new CronJob(config.qotdTime, function() {
         scrape(bot.guilds);
     }, null, true, 'America/New_York');
 
