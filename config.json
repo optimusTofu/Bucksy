@@ -4,7 +4,7 @@
     "channels": {
         "qotd": "582228584408678400"
     },
-    "qotdTime": "0 0 8 * * *",
+    "qotdTime": "0 2 13 * * *",
     "verifiedRole": true,
     "prefix": ["$", "!", "."],
     "teams": ["harmony", "instinct", "mystic", "valor"]
