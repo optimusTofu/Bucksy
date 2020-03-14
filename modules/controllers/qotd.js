@@ -9,8 +9,8 @@ const scrape = (async (guilds) => {
     const browser = await puppeteer.launch({
         headless: false,
         args: [
-            'no-sandbox',
-            'disable-setuid-sandbox',
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
         ]
     });
     const page = await browser.newPage();
