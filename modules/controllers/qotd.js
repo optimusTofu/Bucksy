@@ -29,9 +29,9 @@ const scrape = (async (guilds) => {
         ]
     });
     const page = await browser.newPage();
-    await page.goto("https://www.reddit.com/r/AskReddit/");
+    await page.goto(config.qotdURL);
     
-    let things = await page.$$(".scrollerItem");
+    let things = await page.$$(".scrollerItem:not(.Blank)");
     let questions = [];
 
     for (let thing of things) {

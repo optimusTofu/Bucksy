@@ -1,8 +1,8 @@
 {
     "botName": "Bucksy",
-    "guildID": "538597663826771968",
+    "guildID": "***",
     "channels": {
-        "qotd": "582228584408678400"
+        "qotd": "***"
     },
     "qotdTime": "0 27 1 * * *",
     "qotdURL": "https://www.reddit.com/r/AskReddit/",
