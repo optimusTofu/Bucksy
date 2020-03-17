@@ -4,6 +4,21 @@ const puppeteer = require("puppeteer");
 const CronJob = require('cron').CronJob;
 const auth = require("../../private/auth.json");
 const config = require("../../config.json");
+const curseWordList = require("../../private/curseWordList.json");
+
+const sanitize = (input) => {
+    let words = input.split(" ");
+
+    let filtered = words.map(word => {
+        if (curseWordList.indexOf(word) >= 0) {
+            return word.replace(/./g, "*");
+        }
+
+        return word;
+    });
+
+    return filtered.join(" ");
+};
 
 const scrape = (async (guilds) => {
     const browser = await puppeteer.launch({
@@ -14,7 +29,7 @@ const scrape = (async (guilds) => {
         ]
     });
     const page = await browser.newPage();
-    await page.goto("https://www.reddit.com/r/InsightfulQuestions/");
+    await page.goto("https://www.reddit.com/r/AskReddit/");
     
     let things = await page.$$(".scrollerItem");
     let questions = [];
@@ -25,7 +40,7 @@ const scrape = (async (guilds) => {
         questions.push(question);
     };
 
-    let question = questions[Math.floor(Math.random() * questions.length)];
+    let question = sanitize(questions[Math.floor(Math.random() * questions.length)]);
 
     let guild = guilds.get(config.guildID);
 
@@ -48,7 +63,6 @@ const scrape = (async (guilds) => {
     Months: 0-11 (Jan-Dec)
     Day of Week: 0-6 (Sun-Sat)
 */
-
 const start = (bot) => {
     let job = new CronJob(config.qotdTime, function() {
         scrape(bot.guilds);
