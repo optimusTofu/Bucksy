@@ -2,7 +2,7 @@ const auth = require("./private/auth.json");
 const config = require("./config.json");
 const Discord = require("discord.js");
 const apiai = require("apiai")("9ac28c4b9a0043b18b779a2ce6b8eef3");
-const listen = require("./modules/controllers/command.js").listen;
+const commands = require("./modules/controllers/commands.js");
 const greeting = require("./modules/controllers/greeting.js");
 const qotd = require("./modules/controllers/qotd.js");
 
@@ -27,7 +27,7 @@ bot.on('message', msg => {
     });
 
     if (isCommand) {
-      listen(msg);
+      commands.listen(msg);
     }  else if (msg.author.bot && msg.author.username === "Hoppip" && msg.channel.name === "ultra-rare-pokemon") {
       let pokemonName = msg.embeds[0].fields[0].name.split("**")[1].toLowerCase();
       let pokemonRole = msg.guild.roles.find(role => role.name.toLowerCase() === pokemonName);
