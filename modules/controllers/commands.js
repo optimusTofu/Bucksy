@@ -1,10 +1,28 @@
 "use strict";
 
+const Discord = require("discord.js");
 const config = require("../../config.json");
 const roleController = require("./role.js");
 const databaseController = require("./database.js");
 const slotMachineController = require("./slots.js");
-const helpController = require("./help.js");
+
+const showCommands = (msg) => {
+    let helpMsg = new Discord.RichEmbed()
+        .setColor(0x000099)
+        .setTitle(`${config.botName} Commands`)
+        .setDescription(`${config.botName} will listen to these commands if typed with a !, ., or & typed before them, like !help.`);
+
+    Object.keys(commands).forEach(cmd => {
+        let commandDescription = commands[cmd].description;
+        helpMsg.addField(cmd, commandDescription, true);
+
+        if (commands[cmd].hasOwnProperty("alias")) {
+            helpMsg.addField(commands[cmd].alias, commandDescription, true);
+        }
+    });
+
+    msg.channel.send(helpMsg);
+};
 
 const commands = {
     "iam": {
@@ -50,7 +68,7 @@ const commands = {
     },
     "help": {
         "description": `${config.botName} will print commands.`,
-        "callback": helpController.showCommands.bind(this)
+        "callback": showCommands
     }
 };
 
@@ -94,6 +112,7 @@ const listen = function(msg) {
     if (commandIsTeam) commands["team"].callback(msg, new Array(config.teams[commandTeamIndex]));
     else if (commandExists) commands[cmd].callback(msg, args);
 };
+
 
 module.exports = {
     prefixExists,

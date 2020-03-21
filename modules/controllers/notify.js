@@ -9,3 +9,7 @@ const pokemon = (msg) => {
         msg.channel.send(`${pokemonRole} - ${locationName}`);
     }
 };
+
+module.exports = {
+    pokemon
+};
