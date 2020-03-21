@@ -17,15 +17,15 @@ const teams = {
     }
 };
 
-const addTeam = function (msg, args) {
+const addTeam = function(msg, args) {
     let teamName = args[0].toLowerCase();
     let team = msg.guild.roles.find(role => role.name === teamName);
     let user = msg.member;
 
     user.addRole(msg.guild.roles.find(role => role.name === "Verified"));
-    
+
     if (teamName === "") return;
-    
+
     if (team) {
         if (msg.member.roles.some(team => teamName === team.name)) return;
         if (msg.member.roles.some(team => Object.keys(teams).includes(team.name))) removeTeam(msg)
@@ -34,7 +34,7 @@ const addTeam = function (msg, args) {
     }
 };
 
-const removeTeam = function (msg) {
+const removeTeam = function(msg) {
     let user = msg.member;
 
     // testing loop to remove teams from array...
@@ -47,14 +47,16 @@ const removeTeam = function (msg) {
     });
 };
 
-const addLocation = function (msg, args) {
+const addLocation = function(msg, args) {
+    if (typeof args[0] === "undefined") return;
+
     let locationName = args[0].toLowerCase();
     let location = msg.guild.roles.find(role => role.name === locationName);
     let user = msg.member;
     let locationMsg;
-    
+
     if (locationName === "") return;
-    
+
     if (location) {
         if (msg.member.roles.some(role => role.name === locationName)) {
             locationMsg = new Discord.RichEmbed()
@@ -79,14 +81,14 @@ const addLocation = function (msg, args) {
     msg.channel.send(locationMsg);
 };
 
-const removeLocation = function (msg, args) {
+const removeLocation = function(msg, args) {
     let locationName = args[0].toLowerCase();
     let location = msg.guild.roles.find(role => role.name === locationName);
     let user = msg.member;
     let locationMsg;
-    
+
     if (locationName === "") return;
-    
+
     if (location) {
         if (msg.member.roles.some(location => locationName === location.name)) {
             user.removeRole(location).catch(console.error);
@@ -107,20 +109,20 @@ const removeLocation = function (msg, args) {
     msg.channel.send(locationMsg);
 };
 
-const addPokemon = function (msg, args) {
+const addPokemon = function(msg, args) {
     let pokemonName = args[0].toLowerCase();
     let pokemon = msg.guild.roles.find(role => role.name === pokemonName);
     let user = msg.member;
     let pokemonMsg;
-    
+
     if (pokemonName === "") return;
-    
+
     if (pokemon) {
         if (msg.member.roles.some(role => role.name === pokemonName)) {
             pokemonMsg = new Discord.RichEmbed()
                 .setColor(0x7FDF37)
                 .setTitle(`${msg.member.user.tag} You already have the **${pokemon.name}** role.`);
-            
+
             msg.channel.send(pokemonMsg);
         } else {
             if (Object.keys(teams).includes(pokemonName)) {
@@ -131,38 +133,38 @@ const addPokemon = function (msg, args) {
             pokemonMsg = new Discord.RichEmbed()
                 .setColor(0x7FDF37)
                 .setTitle(`${msg.member.user.tag} You now have the **${pokemon.name}** role.`);
-            
+
             msg.channel.send(pokemonMsg);
         }
     } else {
         // Create a new role with data
         msg.guild.createRole({
-            name: pokemonName,
-            color: 'BLUE',
-	    mentionable: true,
-        })
-        .then(role => {
-            user.addRole(role).catch(console.error);
+                name: pokemonName,
+                color: 'BLUE',
+                mentionable: true,
+            })
+            .then(role => {
+                user.addRole(role).catch(console.error);
 
-            pokemonMsg = new Discord.RichEmbed()
-            .setColor(0x7FDF37)
-            .setTitle(`${msg.member.user.tag} You now have the **${role.name}** role.`);
-            
-            msg.channel.send(pokemonMsg);
-        })
-        .catch(console.error);
+                pokemonMsg = new Discord.RichEmbed()
+                    .setColor(0x7FDF37)
+                    .setTitle(`${msg.member.user.tag} You now have the **${role.name}** role.`);
+
+                msg.channel.send(pokemonMsg);
+            })
+            .catch(console.error);
     }
 
 };
 
-const removePokemon = function (msg, args) {
+const removePokemon = function(msg, args) {
     let pokemonName = args[0].toLowerCase();
     let pokemon = msg.guild.roles.find(role => role.name === pokemonName);
     let user = msg.member;
     let pokemonMsg;
-    
+
     if (pokemonName === "") return;
-    
+
     if (pokemon) {
         if (msg.member.roles.some(pokemon => pokemonName === pokemon.name)) {
             user.removeRole(pokemon).catch(console.error);
