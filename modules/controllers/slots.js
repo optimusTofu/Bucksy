@@ -1,3 +1,5 @@
+"use strict";
+
 const Discord = require("discord.js");
 const databaseController = require("./database");
 const config = require("../../config.json");
@@ -50,35 +52,35 @@ const spin = function (msg) {
                 databaseController.updateBalance(msg.member.id, 50);
                 winMsg = new Discord.RichEmbed()
                 .setFooter("You Won! 50 PokeCoins have been added to your account.", icon)
-                .addField("Slot Machine Results <:pokecoin:577641216775028747>", result, true)
+                .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
                 .setColor(0x006600);
                 break;
             case emojies[1]:
                 databaseController.updateBalance(msg.member.id, 100);
                 winMsg = new Discord.RichEmbed()
                 .setFooter("You Won! 100 PokeCoins have been added to your account.", icon)
-                .addField("Slot Machine Results <:pokecoin:577641216775028747>", result, true)
+                .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
                 .setColor(0x006600);
                 break;
             case emojies[2]:
                 databaseController.updateBalance(msg.member.id, 500);
                 winMsg = new Discord.RichEmbed()
                 .setFooter("You Won! 500 PokeCoins have been added to your account.", icon)
-                .addField("Slot Machine Results <:pokecoin:577641216775028747>", result, true)
+                .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
                 .setColor(0x006600);
                 break;
             case emojies[3]:
                 databaseController.updateBalance(msg.member.id, 1000);
                 winMsg = new Discord.RichEmbed()
                 .setFooter("You Won! 1000 PokeCoins have been added to your account.", icon)
-                .addField("Slot Machine Results <:pokecoin:577641216775028747>", result, true)
+                .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
                 .setColor(0x006600);
                 break;
             case emojies[4]:
                 databaseController.updateBalance(msg.member.id, 5000);
                 winMsg = new Discord.RichEmbed()
                 .setFooter("You Won! 5000 PokeCoins have been added to your account.", icon)
-                .addField("Slot Machine Results <:pokecoin:577641216775028747>", result, true)
+                .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
                 .setColor(0x006600);
                 break;
         };

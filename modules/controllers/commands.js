@@ -1,3 +1,5 @@
+"use strict";
+
 const config = require("../../config.json");
 const roleController = require("./role.js");
 const databaseController = require("./database.js");
@@ -30,6 +32,7 @@ const commands = {
         "callback": databaseController.addUser
     },
     "balance": {
+        "alias": "bal",
         "description": `${config.botName} will fetch a user's game points balance.`,
         "callback": databaseController.getBalance
     },
@@ -47,22 +50,45 @@ const commands = {
     },
     "help": {
         "description": `${config.botName} will print commands.`,
-        "callback": helpController.showCommands
+        "callback": helpController.showCommands.bind(this)
     }
 };
 
-const getCommands = function () {
+const prefixExists = ((msg) => {
+    let exists = false;
+
+    config.prefix.forEach(prefix => {
+        if (msg) {
+            if (msg.content.startsWith(prefix)) {
+                exists = true;
+            }
+        }
+    });
+    return exists;
+});
+
+const getCommands = function() {
     return commands;
 };
 
-const listen = function (msg) {
+const listen = function(msg) {
     let args = msg.content.substring(1).split(" ");
     let cmd = args[0].toLowerCase();
-    let commandIndex = Object.keys(commands).indexOf(cmd); 
+    let commandIndex = Object.keys(commands).indexOf(cmd);
     let commandExists = commandIndex >= 0 ? true : false;
     let commandTeamIndex = config.teams.indexOf(cmd);
     let commandIsTeam = commandTeamIndex >= 0 ? true : false;
-    
+
+    // overwrite for alias checking
+    for (let command in commands) {
+        if (commands[command].hasOwnProperty("alias")) {
+            if (cmd === commands[command].alias) {
+                commandExists = true;
+                cmd = command;
+            }
+        }
+    }
+
     args = args.splice(1);
 
     if (commandIsTeam) commands["team"].callback(msg, new Array(config.teams[commandTeamIndex]));
@@ -70,6 +96,7 @@ const listen = function (msg) {
 };
 
 module.exports = {
+    prefixExists,
     getCommands,
     listen
 };

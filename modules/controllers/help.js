@@ -1,3 +1,5 @@
+"use strict";
+
 const config = require("../../config.json");
 const commandController = require("./commands.js");
 const Discord = require("discord.js");
