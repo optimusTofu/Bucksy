@@ -7,6 +7,7 @@ const commands = require("./commands.js");
 const databaseController = require("./database");
 let answer = "";
 let answered = false;
+let active = false;
 
 const pokemon_guesses = [{
         answer: "castform",
@@ -94,12 +95,17 @@ const sendGuess = (bot) => {
 
     answer = pokemon_guesses[index].answer;
     answered = false;
+    active = true;
 
     guild.channels.get(config.channels.guess).send({ files: [attachment], embed: guessEmbed });
 };
 
 const getAnswer = () => {
     return answer;
+};
+
+const getActive = () => {
+    return active;
 };
 
 const getAnswered = () => {
@@ -113,6 +119,7 @@ const setAnswered = () => {
 const listen = (msg) => {
     if (msg.author.bot) return;
     if (getAnswered()) return;
+    if (!getActive()) return;
 
     let name = msg.member.user.tag;
     let icon = msg.author.displayAvatarURL;
