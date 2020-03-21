@@ -66,7 +66,7 @@ const pokemon_guesses = [{
         path: "./assets/img/guesses/image13.jpg"
     },
     {
-        answer: "porygon z",
+        answer: "porygon-z",
         path: "./assets/img/guesses/image14.jpg"
     },
     {

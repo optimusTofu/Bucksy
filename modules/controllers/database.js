@@ -64,11 +64,20 @@ const getBalance = function(msg, args) {
         let dbo = db.db(config.mongoDBName);
         dbo.collection("users").findOne({ "id": msg.member.id }, function(err, result) {
             if (err) throw err;
-            let dbMsg = new Discord.RichEmbed()
-                .setColor(0x007700)
-                .setTitle(`${msg.member.user.tag} You currently have ${result.points} <:pokecoin:690199453751443476>!`);
 
-            msg.channel.send(dbMsg);
+            if (result) {
+                let balMsg = new Discord.RichEmbed()
+                    .setColor(0x007700)
+                    .setTitle(`${msg.member.user.tag} You currently have ${result.points} <:pokecoin:690199453751443476>!`);
+                msg.channel.send(balMsg);
+            } else {
+                let regMsg = new Discord.RichEmbed()
+                    .setColor(0x007700)
+                    .setTitle(`${msg.member.user.tag} You need to register to the points registry first. Please type "!register"`);
+
+                msg.channel.send(regMsg);
+            }
+
             db.close();
         });
     });
@@ -80,9 +89,22 @@ const updateBalance = function(uid, score) {
         let dbo = db.db(config.mongoDBName);
         let query = { "id": uid };
         var updatePoints = { $inc: { points: score } };
-        dbo.collection("users").updateOne(query, updatePoints, function(err, res) {
+
+        dbo.collection("users").findOne({ "id": uid }, function(err, result) {
             if (err) throw err;
-            db.close();
+
+            if (result) {
+                dbo.collection("users").updateOne(query, updatePoints, function(err, res) {
+                    if (err) throw err;
+                    db.close();
+                });
+            } else {
+                let dbMsg = new Discord.RichEmbed()
+                    .setColor(0x770000)
+                    .setTitle(`${msg.member.user.tag} You need to register to the points registry first. Please type "!register"`);
+
+                msg.channel.send(dbMsg);
+            }
         });
     });
 };
