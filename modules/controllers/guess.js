@@ -5,6 +5,7 @@ const CronJob = require('cron').CronJob;
 const config = require("../../config.json");
 const commands = require("./commands.js");
 const databaseController = require("./database");
+
 let answer = "";
 let answered = false;
 let active = false;
@@ -125,16 +126,16 @@ const listen = (msg) => {
     let icon = msg.author.displayAvatarURL;
 
     if (msg.content.toLowerCase().indexOf(getAnswer().toLowerCase()) >= 0) {
-        databaseController.updateBalance(msg.member.id, 100);
+        databaseController.updateBalance(msg, msg.member.id, 100);
 
         let winMsg = new Discord.RichEmbed()
-            .setFooter(` ${name}, You Won! 100 <:pokecoin:690199453751443476> have been added to your account.`, icon)
+            .setFooter(` ${name}, You Won! 100 Pokecoins have been added to your account.`, icon)
             .setColor(0x006600);
 
         msg.channel.send(winMsg);
         setAnswered();
     } else {
-        databaseController.updateBalance(msg.member.id, -1);
+        databaseController.updateBalance(msg, msg.member.id, -1);
 
         let loseMsg = new Discord.RichEmbed()
             .setFooter(`Sorry, ${name}. Try Again.`, icon)
