@@ -2,6 +2,7 @@
 
 const config = require("../../config.json");
 const apiai = require("apiai")(config.aiID);
+const logger = require("../../util/logger.js");
 
 const listen = (msg) => {
     if (msg.author.bot) return;
@@ -12,11 +13,10 @@ const listen = (msg) => {
     apiaiReq.on('response', (response) => {
         let aiText = response.result.fulfillment.speech;
         msg.channel.send(aiText);
-        // socket.emit('bot reply', aiText); // Send the result back to the browser!
     });
 
     apiaiReq.on('error', (error) => {
-        console.log(error);
+        logger.error(error);
     });
 
     apiaiReq.end();

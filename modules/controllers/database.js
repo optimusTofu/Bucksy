@@ -4,13 +4,14 @@ const config = require("../../config.json");
 const Discord = require("discord.js");
 const mongo = require("mongodb");
 const MongoClient = require("mongodb").MongoClient;
+const logger = require("../../util/logger.js");
 
 const createDatabase = function() {
     let mongoURL = config.mongoDBURL + config.mongoDBName;
 
     MongoClient.connect(mongoURL, (err, db) => {
         if (err) throw err;
-        console.log("Database created!");
+        logger.info("Database created!");
         db.close();
     });
 };
@@ -21,7 +22,7 @@ const createUsersCollection = function() {
         let dbo = db.db(config.mongoDBName);
         dbo.createCollection("users", (err, res) => {
             if (err) throw err;
-            console.log("Collection created!");
+            logger.info("Collection created!");
             db.close();
         });
     });

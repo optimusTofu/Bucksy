@@ -1,5 +1,7 @@
 "use strict";
 
+const logger = require("../../util/logger.js");
+
 const hellos = [
     "Hey there, ",
     "Sup, ",
@@ -17,30 +19,30 @@ const greetings = [
     "Attention please <name> has entered the building"
 ];
 
-const getHelloMsg = function () {
+const getHelloMsg = function() {
     let helloMsg = hellos[Math.floor(Math.random() * hellos.length)];
 
     return helloMsg;
 };
 
-const getGoodbyeMsg = function () {
+const getGoodbyeMsg = function() {
     let goodbyeMsg = goodbyes[Math.floor(Math.random() * goodbyes.length)];
 
     return goodbyeMsg;
 };
 
-const getGreetingMsg = function () {
+const getGreetingMsg = function() {
     let greetingMsg = greetings[Math.floor(Math.random() * greetings.length)];
 
     return greetingMsg;
 };
 
-const sayHello = function (member) {
+const sayHello = function(member) {
     let helloMsg = getHelloMsg();
     const guild = member.guild;
     guild.channels.find(channel => channel.name === "pokenavigate-yourself").send(`
     Hey ${member.user} welcome to the server! Assign your team here and the rest of the server/channels will open up for you! We are happy to have you! ☺️`)
-        .then(function (message) {
+        .then(function(message) {
             message.react("542521772059131905").then(() => {
                 message.react("542521976351227916")
             }).then(() => {
@@ -50,7 +52,7 @@ const sayHello = function (member) {
             const filter = (reaction, user) => {
                 return ['valor', 'instinct', 'mystic'].includes(reaction.emoji.name) && user.id === member.user.id;
             };
-            
+
             message.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
                 .then(collected => {
                     const reaction = collected.first();
@@ -73,19 +75,19 @@ const sayHello = function (member) {
                 .catch(collected => {
                     message.channel.send(`Yoo-hoo ${member.user.tag}, you didn’t set your team yet. Please do so, we want you to join in on the fun! To set your team simply type $team name and replace “name” with the name of your team!`);
                 });
-            
+
         }).catch(function(e) {
-            console.error("Something went wrong.", e);
+            logger.error("Something went wrong.", e);
         });
 };
 
-const sayGoodbye = function (member) {
+const sayGoodbye = function(member) {
     const guild = member.guild;
     guild.channels.find(channel => channel.name === "felicia").send(`User, ${member.user.tag}, has left the building.`)
-        .then(function (message) {
+        .then(function(message) {
             message.react("👎")
         }).catch(function() {
-            console.error("Something went wrong.");
+            logger.error("Something went wrong.");
         });
 };
 
