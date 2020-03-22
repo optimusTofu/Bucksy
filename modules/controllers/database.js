@@ -68,7 +68,7 @@ const getBalance = function(msg, args) {
             if (result) {
                 let balMsg = new Discord.RichEmbed()
                     .setColor(0x007700)
-                    .setTitle(`${msg.member.user.tag} You currently have ${result.points} <:pokecoin:690199453751443476>!`);
+                    .setTitle(`${msg.member.user.tag} You currently have ${result.points} ${config.emojies.pokecoin}`);
                 msg.channel.send(balMsg);
             } else {
                 let regMsg = new Discord.RichEmbed()
@@ -83,7 +83,7 @@ const getBalance = function(msg, args) {
     });
 };
 
-const updateBalance = function(uid, score) {
+const updateBalance = function(msg, uid, score) {
     MongoClient.connect(config.mongoDBURL, (err, db) => {
         if (err) throw err;
         let dbo = db.db(config.mongoDBName);
