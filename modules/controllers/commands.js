@@ -7,10 +7,12 @@ const databaseController = require("./database.js");
 const slotMachineController = require("./slots.js");
 
 const showCommands = (msg) => {
+    let lastPrefix = config.prefix.pop();
+    let prefixes = config.prefix.join(", ") + ", or " + lastPrefix;
     let helpMsg = new Discord.RichEmbed()
         .setColor(0x000099)
         .setTitle(`${config.botName} Commands`)
-        .setDescription(`${config.botName} will listen to these commands if typed with a !, ., or & typed before them, like !help.`);
+        .setDescription(`${config.botName} will listen to these commands if typed with a ${prefixes} typed before them, like !help.`);
 
     Object.keys(commands).forEach(cmd => {
         let commandDescription = commands[cmd].description;
@@ -59,10 +61,12 @@ const commands = {
         "callback": slotMachineController.spin
     },
     "database": {
+        "hidden": true,
         "description": `${config.botName} will create a database.`,
         "callback": databaseController.createDatabase
     },
     "collection": {
+        "hidden": true,
         "description": `${config.botName} will create a users collection.`,
         "callback": databaseController.createUsersCollection
     },
