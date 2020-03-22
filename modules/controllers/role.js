@@ -1,16 +1,17 @@
 "use strict";
 
 const Discord = require("discord.js");
+const config = require("../../config.json");
 
 const teams = {
     "instinct": {
-        "symbol": "<:instinct:577641216896663570>"
+        "symbol": config.emojies.instinct
     },
     "mystic": {
-        "symbol": "<:mystic:577641216821297152>"
+        "symbol": config.emojies.mystic
     },
     "valor": {
-        "symbol": "<:valor:577641216850788352>"
+        "symbol": config.emojies.valor
     },
     "harmony": {
         "symbol": ""
