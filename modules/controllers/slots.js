@@ -22,15 +22,15 @@ const emojies = [
     "<:golden_razz_berry:690047657149857794>"
 ];
 
-const generateRandomEmoji = function (max) {
+const generateRandomEmoji = function(max) {
     return emojies[Math.floor(Math.random() * max)];
 };
 
-const spin = function (msg) {
+const spin = function(msg) {
     if (msg.channel.id !== config.channels.slots) return;
 
     databaseController.updateBalance(msg.member.id, -1);
-    
+
     let first = generateRandomEmoji(emojies.length);
     let second = generateRandomEmoji(emojies.length);
     let third = generateRandomEmoji(emojies.length);
@@ -38,53 +38,53 @@ const spin = function (msg) {
     let win = (first === second && second === third) ? true : false;
     let name = msg.author.displayName;
     let icon = msg.author.displayAvatarURL;
-    
+
     let slotMsg = new Discord.RichEmbed()
         .setFooter("Try again.", icon)
         .addField("Slot Machine Reults", result, true)
         .setColor(0xFFA500);
-    
+
     if (win) {
         let winMsg;
-        
-        switch(first) {
+
+        switch (first) {
             case emojies[0]:
                 databaseController.updateBalance(msg.member.id, 50);
                 winMsg = new Discord.RichEmbed()
-                .setFooter("You Won! 50 PokeCoins have been added to your account.", icon)
-                .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
-                .setColor(0x006600);
+                    .setFooter("You Won! 50 PokeCoins have been added to your account.", icon)
+                    .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
+                    .setColor(0x006600);
                 break;
-            case emojies[1]:
+            case emojies[5]:
                 databaseController.updateBalance(msg.member.id, 100);
                 winMsg = new Discord.RichEmbed()
-                .setFooter("You Won! 100 PokeCoins have been added to your account.", icon)
-                .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
-                .setColor(0x006600);
+                    .setFooter("You Won! 100 PokeCoins have been added to your account.", icon)
+                    .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
+                    .setColor(0x006600);
                 break;
-            case emojies[2]:
+            case emojies[9]:
                 databaseController.updateBalance(msg.member.id, 500);
                 winMsg = new Discord.RichEmbed()
-                .setFooter("You Won! 500 PokeCoins have been added to your account.", icon)
-                .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
-                .setColor(0x006600);
+                    .setFooter("You Won! 500 PokeCoins have been added to your account.", icon)
+                    .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
+                    .setColor(0x006600);
                 break;
-            case emojies[3]:
+            case emojies[12]:
                 databaseController.updateBalance(msg.member.id, 1000);
                 winMsg = new Discord.RichEmbed()
-                .setFooter("You Won! 1000 PokeCoins have been added to your account.", icon)
-                .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
-                .setColor(0x006600);
+                    .setFooter("You Won! 1000 PokeCoins have been added to your account.", icon)
+                    .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
+                    .setColor(0x006600);
                 break;
-            case emojies[4]:
+            case emojies[14]:
                 databaseController.updateBalance(msg.member.id, 5000);
                 winMsg = new Discord.RichEmbed()
-                .setFooter("You Won! 5000 PokeCoins have been added to your account.", icon)
-                .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
-                .setColor(0x006600);
+                    .setFooter("You Won! 5000 PokeCoins have been added to your account.", icon)
+                    .addField("Slot Machine Results <:pokecoin:690199453751443476>", result, true)
+                    .setColor(0x006600);
                 break;
         };
-        
+
         msg.channel.send(winMsg);
     } else {
         msg.channel.send(slotMsg);
