@@ -6,7 +6,9 @@ const puppeteer = require("puppeteer");
 const CronJob = require('cron').CronJob;
 const auth = require("../../private/auth.json");
 const config = require("../../config.json");
-const curseWordList = require("../../private/curseWordList.json");
+const Filter = require("bad-words");
+const filter = new Filter();
+// const curseWordList = require("../../private/curseWordList.json");
 
 const sanitize = (input) => {
     let words = input.split(" ");
@@ -22,7 +24,7 @@ const sanitize = (input) => {
     return filtered.join(" ");
 };
 
-const scrape = (async (guilds) => {
+const scrape = (async(guilds) => {
     const browser = await puppeteer.launch({
         headless: true,
         args: [
@@ -32,7 +34,7 @@ const scrape = (async (guilds) => {
     });
     const page = await browser.newPage();
     await page.goto(config.qotdURL);
-    
+
     let things = await page.$$(".scrollerItem:not(.Blank)");
     let questions = [];
 
@@ -42,7 +44,7 @@ const scrape = (async (guilds) => {
         questions.push(question);
     };
 
-    let question = sanitize(questions[Math.floor(Math.random() * questions.length)]);
+    let question = filter.clean(questions[Math.floor(Math.random() * questions.length)]);
 
     let guild = guilds.get(config.guildID);
 
@@ -56,15 +58,6 @@ const scrape = (async (guilds) => {
     await browser.close();
 });
 
-// CRON Ranges
-/*
-    Seconds: 0-59
-    Minutes: 0-59
-    Hours: 0-23
-    Day of Month: 1-31
-    Months: 0-11 (Jan-Dec)
-    Day of Week: 0-6 (Sun-Sat)
-*/
 const start = (bot) => {
     let job = new CronJob(config.qotdTime, function() {
         scrape(bot.guilds);
