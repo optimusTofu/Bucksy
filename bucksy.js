@@ -9,7 +9,7 @@ const qotd = require("./modules/controllers/qotd.js");
 const guess = require("./modules/controllers/guess.js");
 const notify = require("./modules/controllers/notify.js");
 const ai = require("./modules/controllers/ai.js");
-const ocr = require("./modules/controllers/ocr.js");
+// const ocr = require("./modules/controllers/ocr.js");
 const logger = require("./util/logger.js");
 const bot = new Discord.Client();
 
@@ -28,11 +28,12 @@ bot.on('message', msg => {
         guess.listen(msg);
     } else if (msg.channel.id === config.channels.ai) {
         ai.listen(msg);
-    } else if (msg.channel.id === config.channels.count) {
-        if (msg.attachments.size > 0 && msg.attachments.every(ocr.isImage)) {
-            ocr.readPokemonCountImageText(msg, msg.attachments.array()[0]);
-        }
     }
+    /*else if (msg.channel.id === config.channels.count) {
+           if (msg.attachments.size > 0 && msg.attachments.every(ocr.isImage)) {
+               ocr.readPokemonCountImageText(msg, msg.attachments.array()[0]);
+           }
+       }*/
 });
 
 bot.on('guildMemberAdd', member => {
