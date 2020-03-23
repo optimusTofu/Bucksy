@@ -41,7 +41,7 @@ const spin = function(msg) {
 
     let slotMsg = new Discord.RichEmbed()
         .setFooter("Try again.", icon)
-        .addField("Slot Machine Reults", result, true)
+        .addField("Slot Machine Results", result, true)
         .setColor(0xFFA500);
 
     if (win) {
