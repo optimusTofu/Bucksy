@@ -5,6 +5,7 @@ const config = require("../../config.json");
 const roleController = require("./role.js");
 const databaseController = require("./database.js");
 const slotMachineController = require("./slots.js");
+const qotdController = require("./qotd.js");
 
 const showCommands = (msg) => {
     let lastPrefix = config.prefix.pop();
@@ -59,6 +60,10 @@ const commands = {
     "spin": {
         "description": `${config.botName} will spin a slot machine. We are working on a point system for rewards you can earn.`,
         "callback": slotMachineController.spin
+    },
+    "ask": {
+        "description": `${config.botName} will ask a new qotd.`,
+        "callback": qotdController.ask
     },
     "database": {
         "hidden": true,
