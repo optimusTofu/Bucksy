@@ -8,6 +8,7 @@ const auth = require("../../private/auth.json");
 const config = require("../../config.json");
 const Filter = require("bad-words");
 const filter = new Filter();
+const logger = require("../../util/logger.js");
 // const curseWordList = require("../../private/curseWordList.json");
 
 const sanitize = (input) => {
@@ -58,6 +59,50 @@ const scrape = (async(guilds) => {
     await browser.close();
 });
 
+const ask = (async(msg) => {
+    if (msg.channel.id === config.channels.qotd && msg.member.roles.some(r => ["Administrator", "Moderator", "developer people"].includes(r.name))) {
+        msg.react("🤔")
+            .catch(logger.error)
+            .then(logger.info("Fetching new QOTD..."));
+    }
+
+    const browser = await puppeteer.launch({
+        headless: true,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+        ]
+    });
+    const page = await browser.newPage();
+    await page.goto(config.qotdURL);
+
+    let things = await page.$$(".scrollerItem:not(.Blank)");
+    let questions = [];
+
+    for (let thing of things) {
+        let question = await thing.$eval(("h3"), node => node.innerText.trim());
+
+        questions.push(question);
+    };
+
+    let question = filter.clean(questions[Math.floor(Math.random() * questions.length)]);
+
+    let qotdMsg = new Discord.RichEmbed()
+        .setColor(0x009900)
+        .setTitle(`Question Of The Day`)
+        .setDescription(question);
+
+    if (msg.channel.id === config.channels.qotd && msg.member.roles.some(r => ["Administrator", "Moderator", "developer people"].includes(r.name))) {
+        msg.clearReactions();
+        msg.react("✅")
+            .catch(logger.error)
+            .then(logger.info("Fetched QOTD successfully!"));
+        msg.channel.send(qotdMsg);
+    }
+
+    await browser.close();
+});
+
 const start = (bot) => {
     let job = new CronJob(config.qotdTime, function() {
         scrape(bot.guilds);
@@ -67,5 +112,6 @@ const start = (bot) => {
 };
 
 module.exports = {
-    start
+    start,
+    ask
 };
