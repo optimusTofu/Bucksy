@@ -25,8 +25,6 @@ const listen = (msg) => {
         const get_type_effectiveness = (response.result.parameters.type_effectiveness) ? true : false;
         let response_obj = {};
 
-        console.log(response);
-
         if (specs) {
             for (let spec of specs) {
                 if (pokemon_endpoint.indexOf(spec) !== -1) {
@@ -98,29 +96,44 @@ const listen = (msg) => {
         if (get_type_effectiveness) {
             const pokemon_type = response.result.parameters.pokemon_types;
             let type_effectiveness = response.result.parameters.type_effectiveness[0];
-            // const type_effectiveness_formatted = type_effectiveness.replace(/_/g, ' ');
+            let type_effectiveness_formatted = type_effectiveness.replace(/_/g, ' ');
             const type_effectiveness_word = response.result.contexts[0].parameters['type_effectiveness.original'];
-            let fulfillmentText;
-
-            let from_or_to = type_effectiveness.split('_')[2];
-            const pokemon_type_comes_first = (response.result.parameters.pokemon_types < response.result.resolvedQuery.indexOf(type_effectiveness_word)) ? true : false;
+            const pokemon_type_comes_first = (response.result.resolvedQuery.indexOf(pokemon_type) < response.result.resolvedQuery.indexOf(type_effectiveness_word)) ? true : false;
             const exempt_words = ['resistant', 'no damage', 'zero damage', 'no effect'];
-            const has_exempt_words = exempt_words.some(v => type_effectiveness_word.includes(v));
+
+            let fulfillmentText;
+            let from_or_to = type_effectiveness.split('_')[2];
+            let has_exempt_words = exempt_words.some(v => type_effectiveness_word.includes(v));
+
 
             if ((pokemon_type_comes_first && !has_exempt_words) || (!pokemon_type_comes_first && has_exempt_words)) {
-                let new_from_or_to = (from_or_to == 'from') ? 'to' : 'from';
+                let new_from_or_to = (from_or_to === 'from') ? 'from' : 'to';
                 type_effectiveness = type_effectiveness.replace(from_or_to, new_from_or_to);
                 from_or_to = new_from_or_to;
             }
 
             const output = await axios_instance.get(`/type/${pokemon_type}`);
-            console.log(output, type_effectiveness);
-            const damage_relations = (output.data.damage_relations[type_effectiveness].length > 0) ? output.data.damage_relations[type_effectiveness].map(item => item.name).join(', ') : 'none';
-            const nature_of_damage = (from_or_to == 'from') ? 'receives' : 'inflicts';
 
-            fulfillmentText = (nature_of_damage == 'inflicts') ?
-                `${pokemon_type} type inflicts ${type_effectiveness} ${damage_relations} type` :
-                `${pokemon_type} ${nature_of_damage} ${type_effectiveness} the following: ${damage_relations}`;
+            console.log(type_effectiveness);
+
+            if (type_effectiveness === "effective against") {
+                if (pokemon_type_comes_first) {
+                    type_effectiveness = "double_damage_to";
+                    type_effectiveness_formatted = "double_damage_to".replace(/_/g, ' ');
+                    from_or_to = "to";
+                } else {
+                    type_effectiveness = "double_damage_from";
+                    type_effectiveness_formatted = "double_damage_from".replace(/_/g, ' ');
+                    from_or_to = "from";
+                }
+            }
+
+            const damage_relations = (output.data.damage_relations[type_effectiveness].length > 0) ? output.data.damage_relations[type_effectiveness].map(item => item.name).join(', ') : 'none';
+            const nature_of_damage = (from_or_to === 'from') ? 'receives' : 'inflicts';
+
+            fulfillmentText = (nature_of_damage === 'inflicts') ?
+                `${pokemon_type} type inflicts ${type_effectiveness_formatted} ${damage_relations} type` :
+                `${pokemon_type} ${nature_of_damage} ${type_effectiveness_formatted} the following: ${damage_relations}`;
 
             Object.assign(response_obj, {
                 fulfillmentText
