@@ -7,7 +7,12 @@ const axios = require("axios");
 
 const axios_instance = axios.create({
     baseURL: "https://pokeapi.co/api/v2",
-    timeout: 3000,
+    timeout: 3000
+});
+
+const axios_joke_instance = axios.create({
+    baseURL: "https://official-joke-api.appspot.com/",
+    timeout: 3000
 });
 
 const listen = (msg) => {
@@ -23,6 +28,8 @@ const listen = (msg) => {
         const pokemon = (response.result.parameters.pokemon) ? response.result.parameters.pokemon.toLowerCase().replace('.', '-').replace(' ', '').replace("'", "") : '';
         const specs = response.result.parameters.specs;
         const get_type_effectiveness = (response.result.parameters.type_effectiveness) ? true : false;
+        const get_joke_intent = (response.result.metadata.intentName === "joke") ? true : false;
+
         let response_obj = {};
 
         if (specs) {
@@ -138,6 +145,19 @@ const listen = (msg) => {
             Object.assign(response_obj, {
                 fulfillmentText
             });
+        }
+
+        if (get_joke_intent) {
+            const { data } = await axios_joke_instance.get(`/random_joke`);
+
+            msg.channel.send(data.setup)
+                .then(() => {
+                    setTimeout(() => {
+                        msg.channel.send(data.punchline);
+                    }, 3000);
+                });
+
+            return;
         }
 
         if (response_obj.fulfillmentText) {

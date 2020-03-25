@@ -60,7 +60,7 @@ const scrape = (async(guilds) => {
 });
 
 const ask = (async(msg) => {
-    if (msg.channel.id === config.channels.qotd && msg.member.roles.some(r => ["Administrator", "Moderator", "developer people"].includes(r.name))) {
+    if (msg.channel.id === config.channels.qotd && msg.member.roles.some(r => config.modRoles.includes(r.name))) {
         msg.react("🤔")
             .catch(logger.error)
             .then(logger.info("Fetching new QOTD..."));
@@ -92,7 +92,8 @@ const ask = (async(msg) => {
         .setTitle(`Question Of The Day`)
         .setDescription(question);
 
-    if (msg.channel.id === config.channels.qotd && msg.member.roles.some(r => ["Administrator", "Moderator", "developer people"].includes(r.name))) {
+    console.log(msg.channel.id, config.channels.qotd, msg.member.roles);
+    if (msg.channel.id === config.channels.qotd && msg.member.roles.some(r => config.modRoles.includes(r.name))) {
         msg.clearReactions();
         msg.react("✅")
             .catch(logger.error)
