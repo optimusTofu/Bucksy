@@ -171,7 +171,7 @@ const listen = (msg) => {
             return;
         }
 
-        if (response_obj.fulfillmentText && !response_obj.payload.is_image) {
+        if (response_obj.fulfillmentText && !response_obj.payload) {
             msg.channel.send(response_obj.fulfillmentText);
         } else if (response_obj.payload.is_image) {
             let file = response_obj.payload.url;
