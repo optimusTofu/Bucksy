@@ -4,6 +4,7 @@ const config = require("../../config.json");
 const apiai = require("apiai")(config.aiID);
 const logger = require("../../util/logger.js");
 const axios = require("axios");
+const Discord = require("discord.js");
 
 const axios_instance = axios.create({
     baseURL: "https://pokeapi.co/api/v2",
@@ -23,7 +24,7 @@ const listen = (msg) => {
     });
 
     apiaiReq.on('response', async(response) => {
-        const pokemon_endpoint = ['abilities', 'moves'];
+        const pokemon_endpoint = ['abilities', 'moves', 'photo'];
         const pokemon_species_endpoint = ['description', 'evolution', 'about'];
         const pokemon = (response.result.parameters.pokemon) ? response.result.parameters.pokemon.toLowerCase().replace('.', '-').replace(' ', '').replace("'", "") : '';
         const specs = response.result.parameters.specs;
@@ -31,15 +32,25 @@ const listen = (msg) => {
         const get_joke_intent = (response.result.metadata.intentName === "joke") ? true : false;
 
         let response_obj = {};
-
         if (specs) {
             for (let spec of specs) {
+
                 if (pokemon_endpoint.indexOf(spec) !== -1) {
                     let fulfillmentText;
                     const { data } = await axios_instance.get(`/pokemon/${pokemon}`);
+                    const id = String(data.id).padStart(3, '0');
                     const value = (specs == 'abilities') ? data.abilities.map(item => item.ability.name).join(', ') : data.moves.map(item => item.move.name).join(', ');
                     fulfillmentText = `The ${specs} of ${pokemon} are: ${value}`;
                     Object.assign(response_obj, { fulfillmentText });
+                    if (specs == 'photo') {
+                        Object.assign(response_obj, {
+                            fulfillmentText: pokemon,
+                            payload: {
+                                is_image: true,
+                                url: `https://www.pkparaiso.com/imagenes/xy/sprites/global_link/${id}.png`
+                            }
+                        });
+                    }
                 }
 
                 if (pokemon_species_endpoint.indexOf(spec) !== -1) {
@@ -160,8 +171,15 @@ const listen = (msg) => {
             return;
         }
 
-        if (response_obj.fulfillmentText) {
+        if (response_obj.fulfillmentText && !response_obj.payload.is_image) {
             msg.channel.send(response_obj.fulfillmentText);
+        } else if (response_obj.payload.is_image) {
+            let file = response_obj.payload.url;
+            let attachment = new Discord.Attachment(file);
+            let photoEmbed = {
+                title: pokemon,
+            };
+            msg.channel.send({ files: [attachment], embed: photoEmbed });
         } else {
             msg.channel.send(response.result.fulfillment.speech);
         }
