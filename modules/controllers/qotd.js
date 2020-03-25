@@ -92,7 +92,6 @@ const ask = (async(msg) => {
         .setTitle(`Question Of The Day`)
         .setDescription(question);
 
-    console.log(msg.channel.id, config.channels.qotd, msg.member.roles);
     if (msg.channel.id === config.channels.qotd && msg.member.roles.some(r => config.modRoles.includes(r.name))) {
         msg.clearReactions();
         msg.react("✅")
