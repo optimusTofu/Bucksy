@@ -173,7 +173,7 @@ const listen = (msg) => {
 
         if (response_obj.fulfillmentText && !response_obj.payload) {
             msg.channel.send(response_obj.fulfillmentText);
-        } else if (response_obj.payload.is_image) {
+        } else if (response_obj.payload && response_obj.payload.is_image) {
             let file = response_obj.payload.url;
             let attachment = new Discord.Attachment(file);
             let photoEmbed = {
