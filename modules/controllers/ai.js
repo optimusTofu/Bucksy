@@ -24,7 +24,7 @@ const listen = (msg) => {
     });
 
     apiaiReq.on('response', async(response) => {
-        const pokemon_endpoint = ['abilities', 'moves', 'photo'];
+        const pokemon_endpoint = ['abilities', 'moves', 'photo', 'type'];
         const pokemon_species_endpoint = ['description', 'evolution', 'about'];
         const pokemon = (response.result.parameters.pokemon) ? response.result.parameters.pokemon.toLowerCase().replace('.', '-').replace(' ', '').replace("'", "") : '';
         const specs = response.result.parameters.specs;
@@ -39,9 +39,19 @@ const listen = (msg) => {
                     let fulfillmentText;
                     const { data } = await axios_instance.get(`/pokemon/${pokemon}`);
                     const id = String(data.id).padStart(3, '0');
+                    const types = data.types.map(item => item.type.name).join(", ");
                     const value = (specs == 'abilities') ? data.abilities.map(item => item.ability.name).join(', ') : data.moves.map(item => item.move.name).join(', ');
+
                     fulfillmentText = `The ${specs} of ${pokemon} are: ${value}`;
+
                     Object.assign(response_obj, { fulfillmentText });
+
+                    if (specs == 'type') {
+                        fulfillmentText = `${pokemon} is typed as: ${types}`;
+
+                        Object.assign(response_obj, { fulfillmentText });
+                    }
+
                     if (specs == 'photo') {
                         Object.assign(response_obj, {
                             fulfillmentText: pokemon,
@@ -131,8 +141,6 @@ const listen = (msg) => {
             }
 
             const output = await axios_instance.get(`/type/${pokemon_type}`);
-
-            console.log(type_effectiveness);
 
             if (type_effectiveness === "effective against") {
                 if (pokemon_type_comes_first) {
