@@ -5,6 +5,7 @@ const apiai = require("apiai")(config.aiID);
 const logger = require("../../util/logger.js");
 const axios = require("axios");
 const Discord = require("discord.js");
+const shinyList = require("../../assets/data/shinies.json");
 
 const axios_instance = axios.create({
     baseURL: "https://pokeapi.co/api/v2",
@@ -24,7 +25,7 @@ const listen = (msg) => {
     });
 
     apiaiReq.on('response', async(response) => {
-        const pokemon_endpoint = ['abilities', 'moves', 'photo', 'type'];
+        const pokemon_endpoint = ['abilities', 'moves', 'photo', 'type', 'shiny'];
         const pokemon_species_endpoint = ['description', 'evolution', 'about'];
         const pokemon = (response.result.parameters.pokemon) ? response.result.parameters.pokemon.toLowerCase().replace('.', '-').replace(' ', '').replace("'", "") : '';
         const specs = response.result.parameters.specs;
@@ -60,6 +61,26 @@ const listen = (msg) => {
                                 url: `https://www.pkparaiso.com/imagenes/xy/sprites/global_link/${id}.png`
                             }
                         });
+                    }
+
+                    if (specs == "shiny") {
+                        let shinyExists = false;
+
+                        for (let shiny of shinyList) {
+                            if (shiny.toLowerCase() == pokemon.toLowerCase()) {
+                                shinyExists = true;
+                            }
+                        }
+
+                        if (shinyExists) {
+                            fulfillmentText = `Yes, ${pokemon} is available as a shiny.`;
+
+                            Object.assign(response_obj, { fulfillmentText });
+                        } else {
+                            fulfillmentText = `No, ${pokemon} is not available as a shiny at this time.`;
+
+                            Object.assign(response_obj, { fulfillmentText });
+                        }
                     }
                 }
 
