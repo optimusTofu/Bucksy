@@ -22,8 +22,19 @@ const createUsersCollection = function() {
         let dbo = db.db(config.mongoDBName);
         dbo.createCollection("users", (err, res) => {
             if (err) throw err;
-            logger.info("Collection created!");
+            logger.info("User Collection created!");
             db.close();
+        });
+    });
+};
+
+const createShiniesCollection = function() {
+    MongoClient.connect(config.mongoDBURL, (err, db) => {
+        if (err) throw err;
+        let dbo = db.db(config.mongoDBName);
+        dbo.createCollection("shinies", (err, res) => {
+            if (err) throw err;
+            logger.info("Shiny Collection created!");
         });
     });
 };
@@ -59,27 +70,34 @@ const addUser = function(msg, args) {
     });
 };
 
-const getBalance = function(msg, args) {
+const addShiny = function(msg, args) {
     MongoClient.connect(config.mongoDBURL, (err, db) => {
         if (err) throw err;
         let dbo = db.db(config.mongoDBName);
-        dbo.collection("users").findOne({ "id": msg.member.id }, function(err, result) {
+        let pokemon = args[0].toLowerCase();
+        let obj = { "title": pokemon };
+        let exists = false;
+
+        dbo.collection("shinies").findOne({ "title": pokemon }, function(err, result) {
             if (err) throw err;
-
             if (result) {
-                let balMsg = new Discord.RichEmbed()
-                    .setColor(0x007700)
-                    .setTitle(`${msg.member.user.tag} You currently have ${result.points} ${config.emojies.pokecoin}`);
-                msg.channel.send(balMsg);
+                let existMsg = new Discord.RichEmbed()
+                    .setColor(0x660000)
+                    .setTitle(`${pokemon}, is already registered.`);
+                msg.channel.send(existMsg);
+                db.close();
+                exists = true;
             } else {
-                let regMsg = new Discord.RichEmbed()
-                    .setColor(0x007700)
-                    .setTitle(`${msg.member.user.tag} You need to register to the points registry first. Please type "!register"`);
+                dbo.collection("shinies").insertOne(obj, (err, res) => {
+                    if (err) throw err;
+                    let dbMsg = new Discord.RichEmbed()
+                        .setColor(0x007700)
+                        .setTitle(`${pokemon} is now registered to the shiny list!`);
 
-                msg.channel.send(regMsg);
+                    msg.channel.send(dbMsg);
+                    db.close();
+                });
             }
-
-            db.close();
         });
     });
 };
@@ -110,10 +128,46 @@ const updateBalance = function(msg, uid, score) {
     });
 };
 
+const getBalance = function(msg, args) {
+    MongoClient.connect(config.mongoDBURL, (err, db) => {
+        if (err) throw err;
+        let dbo = db.db(config.mongoDBName);
+        dbo.collection("users").findOne({ "id": msg.member.id }, function(err, result) {
+            if (err) throw err;
+
+            if (result) {
+                let balMsg = new Discord.RichEmbed()
+                    .setColor(0x007700)
+                    .setTitle(`${msg.member.user.tag} You currently have ${result.points} ${config.emojies.pokecoin}`);
+                msg.channel.send(balMsg);
+            } else {
+                let regMsg = new Discord.RichEmbed()
+                    .setColor(0x007700)
+                    .setTitle(`${msg.member.user.tag} You need to register to the points registry first. Please type "!register"`);
+
+                msg.channel.send(regMsg);
+            }
+
+            db.close();
+        });
+    });
+};
+
+const shinyExists = async function(pokemon) {
+    const db = await MongoClient.connect(config.mongoDBURL);
+    const dbo = db.db(config.mongoDBName);
+    const result = await dbo.collection("shinies").findOne({ "title": pokemon });
+
+    return (result);
+};
+
 module.exports = {
     createDatabase,
     createUsersCollection,
+    createShiniesCollection,
+    addShiny,
     addUser,
     getBalance,
-    updateBalance
+    updateBalance,
+    shinyExists
 };

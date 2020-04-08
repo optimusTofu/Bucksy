@@ -5,6 +5,7 @@ const apiai = require("apiai")(config.aiID);
 const logger = require("../../util/logger.js");
 const axios = require("axios");
 const Discord = require("discord.js");
+const database = require("./database.js");
 const shinyList = require("../../assets/data/shinies.json");
 
 const axios_instance = axios.create({
@@ -64,13 +65,7 @@ const listen = (msg) => {
                     }
 
                     if (specs == "shiny") {
-                        let shinyExists = false;
-
-                        for (let shiny of shinyList) {
-                            if (shiny.toLowerCase() == pokemon.toLowerCase()) {
-                                shinyExists = true;
-                            }
-                        }
+                        let shinyExists = await database.shinyExists(pokemon.toLowerCase());
 
                         if (shinyExists) {
                             fulfillmentText = `Yes, ${pokemon} is available as a shiny.`;
