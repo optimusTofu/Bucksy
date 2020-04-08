@@ -16,11 +16,15 @@ const showCommands = (msg) => {
         .setDescription(`${config.botName} will listen to these commands if typed with a ${prefixes} typed before them, like !help.`);
 
     Object.keys(commands).forEach(cmd => {
+        let commandHidden = commands[cmd].hidden;
         let commandDescription = commands[cmd].description;
-        helpMsg.addField(cmd, commandDescription, true);
 
-        if (commands[cmd].hasOwnProperty("alias")) {
-            helpMsg.addField(commands[cmd].alias, commandDescription, true);
+        if (!commandHidden) {
+            helpMsg.addField(cmd, commandDescription, true);
+
+            if (commands[cmd].hasOwnProperty("alias")) {
+                helpMsg.addField(commands[cmd].alias, commandDescription, true);
+            }
         }
     });
 
@@ -62,6 +66,7 @@ const commands = {
         "callback": slotMachineController.spin
     },
     "ask": {
+        "hidden": true,
         "description": `${config.botName} will ask a new qotd.`,
         "callback": qotdController.ask
     },
@@ -70,12 +75,23 @@ const commands = {
         "description": `${config.botName} will create a database.`,
         "callback": databaseController.createDatabase
     },
-    "collection": {
+    "users": {
         "hidden": true,
-        "description": `${config.botName} will create a users collection.`,
+        "description": `${config.botName} will create a users database collection.`,
         "callback": databaseController.createUsersCollection
     },
+    "add": {
+        "hidden": true,
+        "description": `${config.botName} will add a shiny to the shiny list.`,
+        "callback": databaseController.addShiny
+    },
+    "shinies": {
+        "hidden": true,
+        "description": `${config.botName} will create a shinies database collection.`,
+        "callback": databaseController.createShiniesCollection
+    },
     "help": {
+        "hidden": true,
         "description": `${config.botName} will print commands.`,
         "callback": showCommands
     }
@@ -93,10 +109,6 @@ const prefixExists = ((msg) => {
     });
     return exists;
 });
-
-const getCommands = function() {
-    return commands;
-};
 
 const listen = function(msg) {
     let args = msg.content.substring(1).split(" ");
@@ -125,6 +137,5 @@ const listen = function(msg) {
 
 module.exports = {
     prefixExists,
-    getCommands,
     listen
 };
