@@ -146,9 +146,15 @@ const listen = (msg) => {
 };
 
 const start = (bot) => {
-    let job = new CronJob(config.guessTime, function() {
-        sendGuess(bot);
-    }, null, true, 'America/New_York');
+    let job = new CronJob({
+        cronTime: config.guessTime,
+        onTick: function() {
+            sendGuess(bot);
+            job.stop();
+        },
+        start: false,
+        timeZone: 'America/New_York'
+    });
 
     job.start();
 };
