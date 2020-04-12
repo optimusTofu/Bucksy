@@ -104,9 +104,15 @@ const ask = (async(msg) => {
 });
 
 const start = (bot) => {
-    let job = new CronJob(config.qotdTime, function() {
-        scrape(bot.guilds);
-    }, null, true, 'America/New_York');
+    let job = new CronJob({
+        cronTime: config.qotdTime,
+        onTick: function() {
+            scrape(bot.guilds);
+            job.stop();
+        },
+        start: false,
+        timeZone: 'America/New_York'
+    });
 
     job.start();
 };
