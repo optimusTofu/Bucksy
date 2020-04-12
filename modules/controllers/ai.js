@@ -6,7 +6,6 @@ const logger = require("../../util/logger.js");
 const axios = require("axios");
 const Discord = require("discord.js");
 const database = require("./database.js");
-const shinyList = require("../../assets/data/shinies.json");
 
 const axios_instance = axios.create({
     baseURL: "https://pokeapi.co/api/v2",
