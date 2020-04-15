@@ -41,7 +41,7 @@ const listen = (msg) => {
                     const { data } = await axios_instance.get(`/pokemon/${pokemon}`);
                     const id = String(data.id).padStart(3, '0');
 
-                    switch (specs) {
+                    switch (spec) {
                         case "type":
                             const types = data.types.map(item => item.type.name).join(", ");
 
