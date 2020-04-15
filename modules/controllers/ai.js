@@ -40,42 +40,44 @@ const listen = (msg) => {
                     let fulfillmentText;
                     const { data } = await axios_instance.get(`/pokemon/${pokemon}`);
                     const id = String(data.id).padStart(3, '0');
-                    const value = (specs == 'abilities') ? data.abilities.map(item => item.ability.name).join(', ') : data.moves.map(item => item.move.name).join(', ');
 
-                    fulfillmentText = `The ${specs} of ${pokemon} are: ${value}`;
+                    switch (specs) {
+                        case "type":
+                            const types = data.types.map(item => item.type.name).join(", ");
 
-                    Object.assign(response_obj, { fulfillmentText });
+                            fulfillmentText = `${pokemon} is typed as: ${types}`;
 
-                    if (specs == 'type') {
-                        const types = data.types.map(item => item.type.name).join(", ");
+                            Object.assign(response_obj, { fulfillmentText });
+                            break;
+                        case "photo":
+                            Object.assign(response_obj, {
+                                fulfillmentText: pokemon,
+                                payload: {
+                                    is_image: true,
+                                    url: `https://www.pkparaiso.com/imagenes/xy/sprites/global_link/${id}.png`
+                                }
+                            });
+                            break;
+                        case "shiny":
+                            let shinyExists = await database.shinyExists(pokemon.toLowerCase());
 
-                        fulfillmentText = `${pokemon} is typed as: ${types}`;
+                            if (shinyExists) {
+                                fulfillmentText = `Yes, ${pokemon} is available as a shiny.`;
 
-                        Object.assign(response_obj, { fulfillmentText });
-                    }
+                                Object.assign(response_obj, { fulfillmentText });
+                            } else {
+                                fulfillmentText = `No, ${pokemon} is not available as a shiny at this time.`;
 
-                    if (specs == 'photo') {
-                        Object.assign(response_obj, {
-                            fulfillmentText: pokemon,
-                            payload: {
-                                is_image: true,
-                                url: `https://www.pkparaiso.com/imagenes/xy/sprites/global_link/${id}.png`
+                                Object.assign(response_obj, { fulfillmentText });
                             }
-                        });
-                    }
+                            break;
+                        default:
+                            const value = (specs == 'abilities') ? data.abilities.map(item => item.ability.name).join(', ') : data.moves.map(item => item.move.name).join(', ');
 
-                    if (specs == "shiny") {
-                        let shinyExists = await database.shinyExists(pokemon.toLowerCase());
-
-                        if (shinyExists) {
-                            fulfillmentText = `Yes, ${pokemon} is available as a shiny.`;
+                            fulfillmentText = `The ${specs} of ${pokemon} are: ${value}`;
 
                             Object.assign(response_obj, { fulfillmentText });
-                        } else {
-                            fulfillmentText = `No, ${pokemon} is not available as a shiny at this time.`;
-
-                            Object.assign(response_obj, { fulfillmentText });
-                        }
+                            break;
                     }
                 }
 
