@@ -29,11 +29,11 @@ bot.on('message', msg => {
     } else if (msg.channel.id === config.channels.ai) {
         ai.listen(msg);
     }
-    /*else if (msg.channel.id === config.channels.count) {
-           if (msg.attachments.size > 0 && msg.attachments.every(ocr.isImage)) {
-               ocr.readPokemonCountImageText(msg, msg.attachments.array()[0]);
-           }
-       }*/
+    /* else if (msg.channel.id === config.channels.count) {
+            if (msg.attachments.size > 0 && msg.attachments.every(ocr.isImage)) {
+                ocr.readPokemonCountImageText(msg, msg.attachments.array()[0]);
+            }
+        }*/
 });
 
 bot.on('guildMemberAdd', member => {
