@@ -56,17 +56,21 @@ const sayHello = function(member) {
             message.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
                 .then(collected => {
                     const reaction = collected.first();
+                    let verified = guild.roles.find(role => role.name === "Verified");
                     if (reaction.emoji.name === 'valor') {
                         let valor = guild.roles.find(role => role.name === "valor");
                         member.addRole(valor).catch(console.error);
+                        member.addRole(verified).catch(console.error);
                         message.channel.send(`${member.user.tag}, you now have the valor role`);
                     } else if (reaction.emoji.name === 'instinct') {
                         let instinct = guild.roles.find(role => role.name === "instinct");
                         member.addRole(instinct).catch(console.error);
+                        member.addRole(verified).catch(console.error);
                         message.channel.send(`${member.user.tag}, you now have the instinct role`);
                     } else if (reaction.emoji.name === 'mystic') {
                         let mystic = guild.roles.find(role => role.name === "mystic");
                         member.addRole(mystic).catch(console.error);
+                        member.addRole(verified).catch(console.error);
                         message.channel.send(`${member.user.tag}, you now have the mystic role`);
                     } else {
                         message.channel.send(`${member.user.tag}, you reacted with something else entirely.`);
