@@ -85,6 +85,11 @@ const commands = {
         "description": `${config.botName} will add a shiny to the shiny list.`,
         "callback": databaseController.addShiny
     },
+    "remove": {
+        "hidden": true,
+        "description": `${config.botName} will remove a shiny from the shiny list.`,
+        "callback": databaseController.removeShiny
+    },
     "shinies": {
         "hidden": true,
         "description": `${config.botName} will create a shinies database collection.`,

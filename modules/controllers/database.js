@@ -104,6 +104,40 @@ const addShiny = function(msg, args) {
     }
 };
 
+const removeShiny = function(msg, args) {
+    if (msg.channel.id === config.channels.ai && msg.member.roles.some(r => config.modRoles.includes(r.name))) {
+        MongoClient.connect(config.mongoDBURL, (err, db) => {
+            if (err) throw err;
+            let dbo = db.db(config.mongoDBName);
+            let pokemon = args[0].toLowerCase();
+            let obj = { "title": pokemon };
+            let exists = false;
+
+            dbo.collection("shinies").findOne({ "title": pokemon }, function(err, result) {
+                if (err) throw err;
+                if (result) {
+                    dbo.collection("shinies").deleteOne(obj, (err, res) => {
+                        if (err) throw err;
+                        let dbMsg = new Discord.RichEmbed()
+                            .setColor(0x007700)
+                            .setTitle(`${pokemon} is now removed from the shiny list!`);
+
+                        msg.channel.send(dbMsg);
+                        db.close();
+                    });
+                } else {
+                    let notExistMsg = new Discord.RichEmbed()
+                        .setColor(0x660000)
+                        .setTitle(`${pokemon}, is not registered in the shiny list.`);
+                    msg.channel.send(notExistMsg);
+                    db.close();
+                    exists = true;
+                }
+            });
+        });
+    }
+};
+
 const updateBalance = function(msg, uid, score) {
     MongoClient.connect(config.mongoDBURL, (err, db) => {
         if (err) throw err;
