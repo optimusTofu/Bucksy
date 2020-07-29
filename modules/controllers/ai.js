@@ -142,46 +142,48 @@ const listen = (msg) => {
         if (get_type_effectiveness) {
             const pokemon_type = response.result.parameters.pokemon_types;
             let type_effectiveness = response.result.parameters.type_effectiveness[0];
-            let type_effectiveness_formatted = type_effectiveness.replace(/_/g, ' ');
-            const type_effectiveness_word = response.result.contexts[0].parameters['type_effectiveness.original'];
-            const pokemon_type_comes_first = (response.result.resolvedQuery.indexOf(pokemon_type) < response.result.resolvedQuery.indexOf(type_effectiveness_word)) ? true : false;
-            const exempt_words = ['resistant', 'no damage', 'zero damage', 'no effect'];
+            if (typeof type_effectiveness !== "undefined") {
+                let type_effectiveness_formatted = type_effectiveness.replace(/_/g, ' ');
+                const type_effectiveness_word = response.result.contexts[0].parameters['type_effectiveness.original'];
+                const pokemon_type_comes_first = (response.result.resolvedQuery.indexOf(pokemon_type) < response.result.resolvedQuery.indexOf(type_effectiveness_word)) ? true : false;
+                const exempt_words = ['resistant', 'no damage', 'zero damage', 'no effect'];
 
-            let fulfillmentText;
-            let from_or_to = type_effectiveness.split('_')[2];
-            let has_exempt_words = exempt_words.some(v => type_effectiveness_word.includes(v));
+                let fulfillmentText;
+                let from_or_to = type_effectiveness.split('_')[2];
+                let has_exempt_words = exempt_words.some(v => type_effectiveness_word.includes(v));
 
 
-            if ((pokemon_type_comes_first && !has_exempt_words) || (!pokemon_type_comes_first && has_exempt_words)) {
-                let new_from_or_to = (from_or_to === 'from') ? 'from' : 'to';
-                type_effectiveness = type_effectiveness.replace(from_or_to, new_from_or_to);
-                from_or_to = new_from_or_to;
-            }
-
-            const output = await axios_instance.get(`/type/${pokemon_type}`);
-
-            if (type_effectiveness === "effective against") {
-                if (pokemon_type_comes_first) {
-                    type_effectiveness = "double_damage_to";
-                    type_effectiveness_formatted = "double_damage_to".replace(/_/g, ' ');
-                    from_or_to = "to";
-                } else {
-                    type_effectiveness = "double_damage_from";
-                    type_effectiveness_formatted = "double_damage_from".replace(/_/g, ' ');
-                    from_or_to = "from";
+                if ((pokemon_type_comes_first && !has_exempt_words) || (!pokemon_type_comes_first && has_exempt_words)) {
+                    let new_from_or_to = (from_or_to === 'from') ? 'from' : 'to';
+                    type_effectiveness = type_effectiveness.replace(from_or_to, new_from_or_to);
+                    from_or_to = new_from_or_to;
                 }
+
+                const output = await axios_instance.get(`/type/${pokemon_type}`);
+
+                if (type_effectiveness === "effective against") {
+                    if (pokemon_type_comes_first) {
+                        type_effectiveness = "double_damage_to";
+                        type_effectiveness_formatted = "double_damage_to".replace(/_/g, ' ');
+                        from_or_to = "to";
+                    } else {
+                        type_effectiveness = "double_damage_from";
+                        type_effectiveness_formatted = "double_damage_from".replace(/_/g, ' ');
+                        from_or_to = "from";
+                    }
+                }
+
+                const damage_relations = (output.data.damage_relations[type_effectiveness].length > 0) ? output.data.damage_relations[type_effectiveness].map(item => item.name).join(', ') : 'none';
+                const nature_of_damage = (from_or_to === 'from') ? 'receives' : 'inflicts';
+
+                fulfillmentText = (nature_of_damage === 'inflicts') ?
+                    `${pokemon_type} type inflicts ${type_effectiveness_formatted} ${damage_relations} type` :
+                    `${pokemon_type} ${nature_of_damage} ${type_effectiveness_formatted} the following: ${damage_relations}`;
+
+                Object.assign(response_obj, {
+                    fulfillmentText
+                });
             }
-
-            const damage_relations = (output.data.damage_relations[type_effectiveness].length > 0) ? output.data.damage_relations[type_effectiveness].map(item => item.name).join(', ') : 'none';
-            const nature_of_damage = (from_or_to === 'from') ? 'receives' : 'inflicts';
-
-            fulfillmentText = (nature_of_damage === 'inflicts') ?
-                `${pokemon_type} type inflicts ${type_effectiveness_formatted} ${damage_relations} type` :
-                `${pokemon_type} ${nature_of_damage} ${type_effectiveness_formatted} the following: ${damage_relations}`;
-
-            Object.assign(response_obj, {
-                fulfillmentText
-            });
         }
 
         if (get_joke_intent) {
