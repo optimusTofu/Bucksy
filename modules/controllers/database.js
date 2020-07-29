@@ -203,6 +203,7 @@ module.exports = {
     createShiniesCollection,
     addShiny,
     addUser,
+    removeShiny,
     getBalance,
     updateBalance,
     shinyExists
