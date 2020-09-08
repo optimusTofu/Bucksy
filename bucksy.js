@@ -24,6 +24,8 @@ bot.on('message', msg => {
         commands.listen(msg);
     } else if (msg.author.bot && msg.author.username === "Hoppip" && msg.channel.name === "ultra-rare-pokemon") {
         notify.pokemon(msg);
+    } else if (msg.author.bot && msg.author.username === "Klefki" && msg.channel.name === "ultra-rare-pokemon") {
+        notify.alt_pokemon(msg);
     } else if (msg.channel.id === config.channels.guess) {
         guess.listen(msg);
     } else if (msg.channel.id === config.channels.ai) {

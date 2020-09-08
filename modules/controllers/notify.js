@@ -10,6 +10,19 @@ const pokemon = (msg) => {
     }
 };
 
+const alt_pokemon = (msg) => {
+    let text = msg.embeds[0].title;
+    let pokemonName = text.split("**")[1].toLowerCase();
+    let pokemonRole = msg.guild.roles.find(role => role.name.toLowerCase() === pokemonName);
+    let locationName = text.split("|")[1];
+
+
+    if (pokemonRole) {
+        msg.channel.send(`${pokemonRole} - ${locationName}`);
+    }
+};
+
 module.exports = {
-    pokemon
+    pokemon,
+    alt_pokemon
 };
