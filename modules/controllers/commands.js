@@ -4,6 +4,7 @@ const Discord = require("discord.js");
 const config = require("../../config.json");
 const roleController = require("./role.js");
 const databaseController = require("./database.js");
+const pointsController = require("./points.js");
 const slotMachineController = require("./slots.js");
 const qotdController = require("./qotd.js");
 
@@ -60,6 +61,10 @@ const commands = {
         "alias": "bal",
         "description": `${config.botName} will fetch a user's game points balance.`,
         "callback": databaseController.getBalance
+    },
+    "spend": {
+        "description": `${config.botName} will spend a specified amount of a user's game points for a prize.`,
+        "callback": pointsController.spend
     },
     "spin": {
         "description": `${config.botName} will spin a slot machine. We are working on a point system for rewards you can earn.`,
