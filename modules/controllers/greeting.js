@@ -40,7 +40,7 @@ const getGreetingMsg = function() {
 const sayHello = function(member) {
     let helloMsg = getHelloMsg();
     const guild = member.guild;
-    guild.channels.find(channel => channel.name === "pokenavigate-yourself").send(`
+    guild.channels.cache.find(channel => channel.name === "pokenavigate-yourself").send(`
     Hey ${member.user} welcome to the server! Assign your team here and the rest of the server/channels will open up for you! We are happy to have you! ☺️`)
         .then(function(message) {
             message.react("542521772059131905").then(() => {
@@ -87,7 +87,7 @@ const sayHello = function(member) {
 
 const sayGoodbye = function(member) {
     const guild = member.guild;
-    guild.channels.find(channel => channel.name === "felicia").send(`User, ${member.user.tag}, has left the building.`)
+    guild.channels.cache.find(channel => channel.name === "felicia").send(`User, ${member.user.tag}, has left the building.`)
         .then(function(message) {
             message.react("👎")
         }).catch(function() {

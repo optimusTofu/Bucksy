@@ -1,6 +1,6 @@
 "use strict";
 
-const Discord = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const config = require("../../config.json");
 const roleController = require("./role.js");
 const databaseController = require("./database.js");
@@ -11,7 +11,7 @@ const qotdController = require("./qotd.js");
 const showCommands = (msg) => {
     let lastPrefix = config.prefix.pop();
     let prefixes = config.prefix.join(", ") + ", or " + lastPrefix;
-    let helpMsg = new Discord.RichEmbed()
+    let helpMsg = new MessageEmbed()
         .setColor(0x000099)
         .setTitle(`${config.botName} Commands`)
         .setDescription(`${config.botName} will listen to these commands if typed with a ${prefixes} typed before them, like !help.`);

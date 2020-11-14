@@ -1,7 +1,7 @@
 "use strict";
 
 const config = require("../../config.json");
-const Discord = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const mongo = require("mongodb");
 const MongoClient = require("mongodb").MongoClient;
 const logger = require("../../util/logger.js");
@@ -49,7 +49,7 @@ const addUser = function(msg, args) {
         dbo.collection("users").findOne({ "id": msg.member.id }, function(err, result) {
             if (err) throw err;
             if (result) {
-                let existMsg = new Discord.RichEmbed()
+                let existMsg = new MessageEmbed()
                     .setColor(0x660000)
                     .setTitle(`${msg.member.user.tag}, you already registered. Try checking your !balance.`);
                 msg.channel.send(existMsg);
@@ -58,7 +58,7 @@ const addUser = function(msg, args) {
             } else {
                 dbo.collection("users").insertOne(obj, (err, res) => {
                     if (err) throw err;
-                    let dbMsg = new Discord.RichEmbed()
+                    let dbMsg = new MessageEmbed()
                         .setColor(0x007700)
                         .setTitle(`${msg.member.user.tag} Welcome to the game registry!`);
 
@@ -82,7 +82,7 @@ const addShiny = function(msg, args) {
             dbo.collection("shinies").findOne({ "title": pokemon }, function(err, result) {
                 if (err) throw err;
                 if (result) {
-                    let existMsg = new Discord.RichEmbed()
+                    let existMsg = new MessageEmbed()
                         .setColor(0x660000)
                         .setTitle(`${pokemon}, is already registered.`);
                     msg.channel.send(existMsg);
@@ -91,7 +91,7 @@ const addShiny = function(msg, args) {
                 } else {
                     dbo.collection("shinies").insertOne(obj, (err, res) => {
                         if (err) throw err;
-                        let dbMsg = new Discord.RichEmbed()
+                        let dbMsg = new MessageEmbed()
                             .setColor(0x007700)
                             .setTitle(`${pokemon} is now registered to the shiny list!`);
 
@@ -118,7 +118,7 @@ const removeShiny = function(msg, args) {
                 if (result) {
                     dbo.collection("shinies").deleteOne(obj, (err, res) => {
                         if (err) throw err;
-                        let dbMsg = new Discord.RichEmbed()
+                        let dbMsg = new MessageEmbed()
                             .setColor(0x007700)
                             .setTitle(`${pokemon} is now removed from the shiny list!`);
 
@@ -126,7 +126,7 @@ const removeShiny = function(msg, args) {
                         db.close();
                     });
                 } else {
-                    let notExistMsg = new Discord.RichEmbed()
+                    let notExistMsg = new MessageEmbed()
                         .setColor(0x660000)
                         .setTitle(`${pokemon}, is not registered in the shiny list.`);
                     msg.channel.send(notExistMsg);
@@ -154,7 +154,7 @@ const updateBalance = function(msg, uid, score) {
                     db.close();
                 });
             } else {
-                let dbMsg = new Discord.RichEmbed()
+                let dbMsg = new MessageEmbed()
                     .setColor(0x770000)
                     .setTitle(`${msg.member.user.tag} You need to register to the points registry first. Please type "!register"`);
 
@@ -172,12 +172,12 @@ const getBalance = function(msg, args) {
             if (err) throw err;
 
             if (result) {
-                let balMsg = new Discord.RichEmbed()
+                let balMsg = new MessageEmbed()
                     .setColor(0x007700)
                     .setTitle(`${msg.member.user.tag} You currently have ${result.points} ${config.emojies.pokecoin}`);
                 msg.channel.send(balMsg);
             } else {
-                let regMsg = new Discord.RichEmbed()
+                let regMsg = new MessageEmbed()
                     .setColor(0x007700)
                     .setTitle(`${msg.member.user.tag} You need to register to the points registry first. Please type "!register"`);
 

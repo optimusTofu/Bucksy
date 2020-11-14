@@ -86,7 +86,7 @@ const pokemon_guesses = [{
 
 const sendGuess = (bot) => {
     let guessMsg = config.guessMsg;
-    let guild = bot.guilds.get(config.guildID);
+    let guild = bot.guilds.fetch(config.guildID);
     let index = Math.floor(Math.random() * (pokemon_guesses.length - 1));
     let file = pokemon_guesses[index].path;
     let attachment = new Discord.Attachment(file);

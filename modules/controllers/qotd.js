@@ -1,7 +1,6 @@
 "use strict";
 
-const Discord = require("discord.js");
-const client = new Discord.Client();
+const { MessageEmbed } = require("discord.js");
 const puppeteer = require("puppeteer");
 const CronJob = require('cron').CronJob;
 const auth = require("../../private/auth.json");
@@ -49,7 +48,7 @@ const scrape = (async(guilds) => {
 
     let guild = guilds.get(config.guildID);
 
-    let qotdMsg = new Discord.RichEmbed()
+    let qotdMsg = new MessageEmbed()
         .setColor(0x009900)
         .setTitle(`Question Of The Day`)
         .setDescription(question);
@@ -60,7 +59,7 @@ const scrape = (async(guilds) => {
 });
 
 const ask = (async(msg) => {
-    if (msg.channel.id === config.channels.qotd && msg.member.roles.some(r => config.modRoles.includes(r.name))) {
+    if (msg.channel.id === config.channels.qotd && msg.member.roles.cache.some(r => config.modRoles.includes(r.name))) {
         msg.react("🤔")
             .catch(logger.error)
             .then(logger.info("Fetching new QOTD..."));
@@ -87,12 +86,12 @@ const ask = (async(msg) => {
 
     let question = filter.clean(questions[Math.floor(Math.random() * questions.length)]);
 
-    let qotdMsg = new Discord.RichEmbed()
+    let qotdMsg = new MessageEmbed()
         .setColor(0x009900)
         .setTitle(`Question Of The Day`)
         .setDescription(question);
 
-    if (msg.channel.id === config.channels.qotd && msg.member.roles.some(r => config.modRoles.includes(r.name))) {
+    if (msg.channel.id === config.channels.qotd && msg.member.roles.cache.some(r => config.modRoles.includes(r.name))) {
         msg.clearReactions();
         msg.react("✅")
             .catch(logger.error)

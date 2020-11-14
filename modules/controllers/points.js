@@ -4,8 +4,6 @@ const logger = require("../../util/logger.js");
 const databaseController = require("./database.js");
 
 const spend = function(msg, args) {
-    console.log(args);
-
     if (!args.length) {
         msg.channel.send(`You must specify an amount of coins to spend, ${msg.member.user.tag}`);
     } else {
