@@ -1,0 +1,21 @@
+{
+  "name": "bucksy",
+  "version": "2.0.0",
+  "description": "a discord utility/game bot for a pokemon server",
+  "main": "index.js",
+  "dependencies": {
+    "apiai": "^4.0.3",
+    "axios": "^0.21.0",
+    "bad-words": "^3.0.4",
+    "cron": "^1.8.2",
+    "discord.js": "^12.4.1",
+    "mongodb": "^3.6.3",
+    "puppeteer": "^5.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
