@@ -16,7 +16,7 @@ const removeTeam = function(msg) {
 
 module.exports = {
     name: 'want',
-    description: 'Set a desired pokemon role for your profile',
+    description: 'Set a desired pokemon for your profile',
     usage: '<pokemon name>',
     args: true,
     execute(msg, args) {
