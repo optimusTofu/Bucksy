@@ -6,7 +6,7 @@ module.exports = {
         let locationName = msg.embeds[0].title;
 
         if (pokemonRole) {
-            msg.channel.send(`${pokemonRole} - ${locationName}`);
+            msg.channel.send(`A wild ${pokemonRole} appeared in ${locationName}`);
         }
     }
 }

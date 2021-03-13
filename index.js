@@ -92,7 +92,7 @@ bot.on('message', (msg) => {
             console.error(error);
             msg.reply('Oops! I am having trouble executing that command.');
         }
-    } else if (msg.author.bot && msg.author.username === config.hoppip.name && msg.channel.name === "ultra-rare-pokemon") {
+    } else if (msg.author.bot && msg.author.id === config.hoppip.id && msg.channel.name === "ultra-rare-pokemon") {
         notify.pokemon(msg);
     } else if (msg.channel.id === config.channels.ai) {
         ai.listen(msg);
