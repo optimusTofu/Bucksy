@@ -114,7 +114,9 @@ bot.on("message", (msg) => {
             bot.log.error(error);
             msg.reply("Oops! I am having trouble executing that command.");
         }
-    } else if (msg.channel.name === "ultra-rare-pokemon") {
+    } else if (msg.channel.id === config.channels.rare) {
+
+        console.log('message', msg);
 
         bot.log.debug(`message in ultra-rare: ${msg}`);
 
