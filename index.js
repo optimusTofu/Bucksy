@@ -114,7 +114,7 @@ bot.on("message", (msg) => {
             bot.log.error(error);
             msg.reply("Oops! I am having trouble executing that command.");
         }
-    } else if (config.channels.rares.includes(msg.channel.id)) {
+    } else if (msg.author.bot && config.channels.rares.includes(msg.channel.id)) {
         notify.pokemon(msg);
     } else if (msg.channel.id === config.channels.ai) {
         ai.listen(msg);
