@@ -1,4 +1,5 @@
 config.json
 private/
-
+.env
 node_modules/
+logs/
