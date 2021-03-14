@@ -1,15 +1,34 @@
-const fs = require('fs');
-const { Client, Collection } = require('discord.js');
-const { token } = require('./private/auth.json');
-const config = require('./config.json');
-const commands = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const fs = require("fs");
+const { Client, Collection } = require("discord.js");
+const { token } = require("./private/auth.json");
+const config = require("./config.json");
+const commands = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 const qotdController = require("./controllers/qotd.js");
 const greetingController = require("./controllers/greeting.js");
 const notify = require("./controllers/notify.js");
 const ai = require("./controllers/ai.js");
-const qotd = require('./controllers/qotd.js');
+const qotd = require("./controllers/qotd.js");
+const winston = require("winston");
 
 const bot = new Client();
+
+bot.log = new winston.createLogger({
+    level: "debug",
+    format: winston.format.json(),
+    defaultMeta: { service: "user-service" },
+    transports: [
+        new winston.transports.File({ filename: "logs/error.log", level: "error" }),
+        new winston.transports.File({ filename: "logs/info.log", level: "info" }),
+        new winston.transports.File({ filename: "logs/debug.log", level: "debug" })
+    ]
+});
+
+if (process.env.NODE_ENV !== 'production') {
+    bot.log.add(new winston.transports.Console({
+        format: winston.format.simple(),
+    }));
+}
+
 bot.commands = new Collection();
 
 for (const file of commands) {
@@ -34,12 +53,12 @@ const prefixExists = ((msg) => {
     return exists;
 });
 
-bot.once('ready', () => {
+bot.once("ready", () => {
     qotdController.start(bot);
-    console.log(`Logged in as ${bot.user.tag} - ${bot.user.username}!`)
+    bot.log.info(`Logged in as ${bot.user.tag} - ${bot.user.username}!`)
 });
 
-bot.on('message', (msg) => {
+bot.on("message", (msg) => {
     const args = msg.content.slice(1).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
 
@@ -48,12 +67,12 @@ bot.on('message', (msg) => {
 
         if (!command) return;
 
-        if (command.guildOnly && msg.channel.type === 'dm') {
-            return msg.reply('I can\'t execute that command inside DMs!');
+        if (command.guildOnly && msg.channel.type === "dm") {
+            return msg.reply("I can't execute that command inside DMs!");
         }
 
         if (commands.modOnly && !msg.member.roles.cache.some(r => config.modRoles.includes(r.name))) {
-            return msg.reply('I can\'t execute that command for you, ask a moderator for help.');
+            return msg.reply("I can't execute that command for you, ask a moderator for help.");
         }
 
         if (command.args && !args.length) {
@@ -89,23 +108,26 @@ bot.on('message', (msg) => {
         try {
             command.execute(msg, args);
         } catch (error) {
-            console.error(error);
-            msg.reply('Oops! I am having trouble executing that command.');
+            bot.log.error(error);
+            msg.reply("Oops! I am having trouble executing that command.");
         }
-    } else if (msg.author.bot && msg.channel.name === "ultra-rare-pokemon") {
+    } else if (msg.channel.name === "ultra-rare-pokemon") {
+
+        bot.log.debug(`message in ultra-rare: ${msg}`);
+
         notify.pokemon(msg);
     } else if (msg.channel.id === config.channels.ai) {
         ai.listen(msg);
     }
 });
 
-bot.on('guildMemberAdd', (member) => {
-    console.info(`Sending a warm greeting to new user: ${member}`);
+bot.on("guildMemberAdd", (member) => {
+    bot.log.info(`Sending a warm greeting to new user: ${member}`);
     greetingController.sayHello(member);
 });
 
-bot.on('guildMemberRemove', (member) => {
-    console.info(`Saying goodbye to user: ${member}`);
+bot.on("guildMemberRemove", (member) => {
+    bot.log.info(`Saying goodbye to user: ${member}`);
     greetingController.sayGoodbye(member);
 });
 
