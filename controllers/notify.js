@@ -1,5 +1,6 @@
 module.exports = {
     pokemon: (msg) => {
+        console.log(msg.embeds[0]);
         let text = msg.embeds[0].description;
         let pokemonName = text.split(" ")[0].toLowerCase();
         let pokemonRole = msg.guild.roles.cache.find(role => pokemonName.startsWith(role.name.toLowerCase()));
