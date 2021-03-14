@@ -9,6 +9,9 @@ const notify = require("./controllers/notify.js");
 const ai = require("./controllers/ai.js");
 const qotd = require("./controllers/qotd.js");
 const winston = require("winston");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const bot = new Client();
 
