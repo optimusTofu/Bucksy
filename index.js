@@ -114,7 +114,7 @@ bot.on("message", (msg) => {
             bot.log.error(error);
             msg.reply("Oops! I am having trouble executing that command.");
         }
-    } else if (msg.channel.id === config.channels.rare) {
+    } else if (config.channels.rares.includes(msg.channel.id)) {
 
         console.log('message', msg);
 
