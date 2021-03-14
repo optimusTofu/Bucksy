@@ -6,8 +6,15 @@ module.exports = {
         let locationName = msg.embeds[0].title.toLowerCase;
         let locationRole = msg.guild.roles.cache.find(role => locationName.startsWith(role.name.toLowerCase()));
 
+        console.log(text);
+        console.log(pokemonName);
+        console.log(pokemonRole);
+
+        console.log(locationName);
+        console.log(locationRole);
+
         if (pokemonRole) {
-            msg.channel.send(`A wild ${pokemonRole} appeared in ${locationRole}`);
+            //msg.channel.send(`A wild ${pokemonRole} appeared in ${locationRole}`);
         }
     }
 }
