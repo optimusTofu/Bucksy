@@ -1,116 +1,156 @@
 const { MessageEmbed } = require("discord.js");
 const puppeteer = require("puppeteer");
-const CronJob = require('cron').CronJob;
+const CronJob = require("cron").CronJob;
 const config = require("../config.json");
 const Filter = require("bad-words");
+const DatabaseController = require("../controllers/database.js");
 
 const filter = new Filter();
 
-const scrape = (async(guilds) => {
-    try {
-        const browser = await puppeteer.launch({
-            headless: true,
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-            ]
-        });
-        const page = await browser.newPage();
-        await page.goto(config.qotdURL);
+const scrape = async (bot) => {
+  try {
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+    const page = await browser.newPage();
+    await page.goto(config.qotdURL);
 
-        let things = await page.$$(".scrollerItem:not(.Blank)");
-        let questions = [];
+    const things = await page.$$(".scrollerItem:not(.Blank)");
+    const questions = [];
 
-        for (let thing of things) {
-            let question = await thing.$eval(("h3"), node => node.innerText.trim());
+    for (const thing of things) {
+      const question = await thing.$eval("h3", (node) => node.innerText.trim());
 
-            questions.push(question);
-        };
-
-        let question = filter.clean(questions[Math.floor(Math.random() * questions.length)]);
-
-        let guild = guilds.cache.get(config.guildID);
-
-        let qotdMsg = new MessageEmbed()
-            .setColor(0x009900)
-            .setTitle(`Question Of The Day`)
-            .setDescription(question);
-
-        guild.channels.cache.get(config.channels.qotd).send(qotdMsg);
-
-        await browser.close();
-    } catch (err) {
-        console.error(err);
-    }
-});
-
-const ask = (async(msg) => {
-    if (msg.channel.id === config.channels.qotd && msg.member.roles.cache.some(r => config.modRoles.includes(r.name))) {
-        msg.react("🤔")
-            .catch(console.error)
-            .then(console.info("Fetching new QOTD..."));
+      questions.push(question);
     }
 
-    try {
-        const browser = await puppeteer.launch({
-            headless: true,
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-            ]
-        });
-        const page = await browser.newPage();
-        await page.goto(config.qotdURL);
-
-        let things = await page.$$(".scrollerItem:not(.Blank)");
-        let questions = [];
-
-        for (let thing of things) {
-            let question = await thing.$eval(("h3"), node => node.innerText.trim());
-
-            questions.push(question);
-        };
-
-        let question = filter.clean(questions[Math.floor(Math.random() * questions.length)]);
-
-        let qotdMsg = new MessageEmbed()
-            .setColor(0x009900)
-            .setTitle(`Question Of The Day`)
-            .setDescription(question);
-
-        if (msg.channel.id === config.channels.qotd && msg.member.roles.cache.some(r => config.modRoles.includes(r.name))) {
-            msg.reactions.removeAll();
-            msg.react("✅")
-                .catch(console.error)
-                .then(console.info("Fetched QOTD successfully!"));
-            msg.channel.send(qotdMsg);
-        }
-
-        await browser.close();
-    } catch (err) {
-        console.error(err);
-    }
-});
-
-const start = (bot) => {
-    let job = new CronJob(
-        config.qotdTime,
-        function() {
-            console.info("ticked QOTD timer");
-            scrape(bot.guilds);
-        },
-        function(err) {
-            console.error(err);
-            scrape(bot.guilds);
-        },
-        false,
-        'America/New_York'
+    const question = filter.clean(
+      questions[Math.floor(Math.random() * questions.length)]
     );
 
-    job.start();
+    if (
+      DatabaseController.questionExists(question)
+        .then(async function (result) {
+          if (result) {
+            bot.log.debug("QOTD already asked. Moving to next scrape attempt.");
+            await browser.close();
+            return scrape(bot);
+          } else {
+            bot.log.debug("New QOTD being asked. Writing to storage.");
+            DatabaseController.addQuestion(question).catch(console.dir);
+
+            const guild = bot.guilds.cache.get(config.guildID);
+            const qotdMsg = new MessageEmbed()
+              .setColor(0x009900)
+              .setTitle("Question Of The Day")
+              .setDescription(question);
+
+            guild.channels.cache.get(config.channels.qotd.id).send(qotdMsg);
+
+            await browser.close();
+          }
+        })
+        .catch(console.dir)
+    );
+  } catch (err) {
+    bot.log.error("scrape error: ", err);
+  }
+};
+
+const ask = async (msg, bot) => {
+  if (
+    msg.channel.id === config.channels.qotd &&
+    msg.member.roles.cache.some((r) => config.modRoles.includes(r.name))
+  ) {
+    msg
+      .react("🤔")
+      .catch(bot.log.error("Ask: Error fetching new QOTD!"))
+      .then(bot.log.debug("Fetching new QOTD..."));
+  }
+
+  try {
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+    const page = await browser.newPage();
+    await page.goto(config.qotdURL);
+
+    const things = await page.$$(".scrollerItem:not(.Blank)");
+    const questions = [];
+
+    for (const thing of things) {
+      const question = await thing.$eval("h3", (node) => node.innerText.trim());
+
+      questions.push(question);
+    }
+
+    const question = filter.clean(
+      questions[Math.floor(Math.random() * questions.length)]
+    );
+
+    if (
+      DatabaseController.questionExists(question)
+        .then(async function (result) {
+          if (result) {
+            bot.log.debug(
+              "QOTD already asked. Moving to next ask attempt using scrape."
+            );
+            await browser.close();
+            return scrape(msg);
+          } else {
+            bot.log.debug("New QOTD being asked. Writing to storage.");
+            DatabaseController.addQuestion(question).catch(console.dir);
+
+            const qotdMsg = new MessageEmbed()
+              .setColor(0x009900)
+              .setTitle("Question Of The Day")
+              .setDescription(question);
+
+            if (
+              msg.channel.id === config.channels.qotd &&
+              msg.member.roles.cache.some((r) =>
+                config.modRoles.includes(r.name)
+              )
+            ) {
+              msg.reactions.removeAll();
+              msg
+                .react("✅")
+                .catch(console.dir)
+                .then(bot.log.debug("Fetched QOTD successfully!"));
+              msg.channel.send(qotdMsg);
+            }
+
+            await browser.close();
+          }
+        })
+        .catch(console.dir)
+    );
+  } catch (err) {
+    bot.log.error("ask error:", err);
+  }
+};
+
+const start = (bot) => {
+  const job = new CronJob(
+    config.qotdTime,
+    function () {
+      bot.log.debug("ticked QOTD timer");
+      scrape(bot);
+    },
+    function (err) {
+      bot.log.error("qotd start error:", err);
+      scrape(bot);
+    },
+    false,
+    "America/New_York"
+  );
+
+  job.start();
 };
 
 module.exports = {
-    start,
-    ask
+  start,
+  ask,
 };
