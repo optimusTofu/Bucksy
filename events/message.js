@@ -21,13 +21,14 @@ module.exports = {
       aiController.listen(msg, bot);
     } else if (msg.channel.id === bot.config.channels.guess.id) {
       guessController.listen(msg, bot);
-    } else if (msg.channel.id === bot.config.channels.count.id) {
+    // eslint-disable-next-line no-inline-comments
+    } /* else if (msg.channel.id === bot.config.channels.count.id) {
       if (msg.attachments.size > 0 && msg.attachments.every(isImage)) {
         ocrController.readPokemonCountImageText(
           msg,
           msg.attachments.array()[0]
         );
       }
-    }
+    }*/
   },
 };
