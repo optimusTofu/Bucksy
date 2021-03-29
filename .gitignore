@@ -1,3 +1,12 @@
-private
-node_modules
+# application runtime files
+.env
 config.json
+
+# winston generated logs
+logs/
+
+# npm generated modules
+node_modules/
+
+# vscode generated settings
+.vscode/
