@@ -28,7 +28,7 @@ bot.log = new createLogger({
 if (process.env.NODE_ENV !== "production") {
   bot.log.add(
     new transports.Console({
-      format: format.simple(),
+      format: format.combine(format.json(), format.timestamp()),
     })
   );
 }
