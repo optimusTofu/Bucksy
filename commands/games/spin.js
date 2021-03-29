@@ -13,7 +13,7 @@ module.exports = {
     name: config.channels.slots.name,
   },
   execute(msg) {
-    DatabaseController.userExists(msg.member.user)
+    DatabaseController.userExists(msg.member.user.id)
       .then(function (result) {
         if (!result) {
           return msg.reply(
