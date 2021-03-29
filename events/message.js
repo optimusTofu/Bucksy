@@ -1,0 +1,33 @@
+const aiController = require("../controllers/ai.js");
+const commandController = require("../controllers/command.js");
+const guessController = require("../controllers/guess.js");
+const notifyController = require("../controllers/notify.js");
+const ocrController = require("../controllers/ocr.js");
+const { prefixExists } = require("../util/prefixExists.js");
+const { isImage } = require("../util/isImage.js");
+
+module.exports = {
+  name: "message",
+  once: false,
+  execute(msg, bot) {
+    if (prefixExists(msg, bot)) {
+      commandController.listen(msg, bot);
+    } else if (
+      msg.author.bot &&
+      msg.channel.id === bot.config.channels.rares.id
+    ) {
+      notifyController.pokemon(msg, bot);
+    } else if (msg.channel.id === bot.config.channels.ai.id) {
+      aiController.listen(msg, bot);
+    } else if (msg.channel.id === bot.config.channels.guess.id) {
+      guessController.listen(msg, bot);
+    } else if (msg.channel.id === bot.config.channels.count.id) {
+      if (msg.attachments.size > 0 && msg.attachments.every(isImage)) {
+        ocrController.readPokemonCountImageText(
+          msg,
+          msg.attachments.array()[0]
+        );
+      }
+    }
+  },
+};
