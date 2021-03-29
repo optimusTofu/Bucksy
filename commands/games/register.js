@@ -14,7 +14,7 @@ module.exports = {
           );
         }
 
-        DatabaseController.addUser(msg)
+        DatabaseController.addUser(msg.member.user.id)
           .then(() => {
             msg.reply("Welcome to the game registry!");
           })

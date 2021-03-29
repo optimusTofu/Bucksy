@@ -47,11 +47,11 @@ const listen = (msg) => {
   if (!getActive()) return;
 
   if (msg.content.toLowerCase().indexOf(getAnswer().toLowerCase()) >= 0) {
-    DatabaseController.updateBalance(msg, 100).catch(console.dir);
+    DatabaseController.updateBalance(msg.member.user.id, 100).catch(console.dir);
     msg.reply("You Won! 100 Pokecoins have been added to your account.");
     setAnswered(true);
   } else {
-    DatabaseController.updateBalance(msg, -1).catch(console.dir);
+    DatabaseController.updateBalance(msg.member.user.id, -1).catch(console.dir);
     msg.reply("Oops, try again");
   }
 };

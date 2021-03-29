@@ -21,7 +21,7 @@ module.exports = {
           );
         }
 
-        DatabaseController.updateBalance(msg, -1).catch(console.dir);
+        DatabaseController.updateBalance(msg.member.user.id, -1).catch(console.dir);
       })
       .catch(console.dir);
 
@@ -115,7 +115,7 @@ module.exports = {
           break;
       }
 
-      DatabaseController.updateBalance(msg, score).catch(console.dir);
+      DatabaseController.updateBalance(msg.member.user.id, score).catch(console.dir);
 
       msg.channel.send(winMsg);
     } else {
