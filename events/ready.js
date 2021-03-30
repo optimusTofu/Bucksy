@@ -5,7 +5,7 @@ const qotdController = require("../controllers/qotd.js");
 module.exports = {
   name: "ready",
   once: true,
-  execute(bot) {
+  execute(args, bot) {
     qotdController.start(bot);
     guessController.start(bot);
     // triviaController.start(bot);
