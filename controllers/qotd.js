@@ -106,19 +106,19 @@ const ask = async (msg) => {
               .setTitle("Question Of The Day")
               .setDescription(question);
 
-            if (
-              msg.channel.id === config.channels.qotd &&
-              msg.member.roles.cache.some((r) =>
-                config.modRoles.includes(r.name)
-              )
-            ) {
+            // if (
+            //   msg.channel.id === config.channels.qotd &&
+            //   msg.member.roles.cache.some((r) =>
+            //     config.modRoles.includes(r.name)
+            //   )
+            // ) {
               msg.reactions.removeAll();
               msg
                 .react("✅")
                 .catch(console.dir)
                 .then(console.debug("Fetched QOTD successfully!"));
               msg.channel.send(qotdMsg);
-            }
+            // }
 
             await browser.close();
           }
