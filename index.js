@@ -1,9 +1,7 @@
 const { Client, Collection } = require("discord.js");
 const fs = require("fs");
 const commands = fs.readdirSync("./commands");
-const events = fs
-  .readdirSync("./events")
-  .filter((file) => file.endsWith(".js"));
+const events = fs.readdirSync("./events").filter((file) => file.endsWith(".js"));
 const { transports, createLogger, format } = require("winston");
 const dotenv = require("dotenv");
 const config = require("./config.json");
