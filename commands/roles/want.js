@@ -9,6 +9,7 @@ module.exports = {
   guildOnly: true,
   args: true,
   execute(msg, args) {
+
     const pokemonName = args[0].toLowerCase();
     const pokemon = msg.guild.roles.cache.find(
       (role) => role.name === pokemonName
@@ -28,9 +29,9 @@ module.exports = {
 
         msg.channel.send(pokemonMsg);
       } else {
-        if (Object.keys(teams).includes(pokemonName)) {
-          removeTeam(msg);
-        }
+        // if (Object.keys(teams).includes(pokemonName)) {
+        //   removeTeam(msg);
+        // }
 
         user.roles.add(pokemon).catch(console.error);
         pokemonMsg = new MessageEmbed()
@@ -42,6 +43,7 @@ module.exports = {
         msg.channel.send(pokemonMsg);
       }
     } else {
+
       // Create a new role with data
       msg.guild.roles
         .create({
@@ -62,7 +64,9 @@ module.exports = {
 
           msg.channel.send(pokemonMsg);
         })
-        .catch(console.error);
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
 };
