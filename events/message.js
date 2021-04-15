@@ -11,7 +11,7 @@ module.exports = {
   name: "message",
   once: false,
   execute(msg, bot) {
-    if (prefixExists(msg, bot)) {
+    if (prefixExists(msg, bot) && msg.channel.id !== bot.config.channels.pvp.id) {
       commandController.listen(msg, bot);
     } else if (
       msg.author.bot &&
