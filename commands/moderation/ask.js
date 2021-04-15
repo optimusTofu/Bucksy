@@ -14,6 +14,7 @@ module.exports = {
   },
   execute(msg, bot) {
     try {
+      console.log(bot);
       QotdController.ask(msg, bot);
     } catch (error) {
       console.error(error);

@@ -58,26 +58,24 @@ const scrape = async (bot) => {
   }
 };
 
-const ask = async (msg, bot) => {
-  if (
-    msg.channel.id === config.channels.qotd &&
-    msg.member.roles.cache.some((r) => config.modRoles.includes(r.name))
-  ) {
+const ask = async (msg) => {
+  try {
     msg
       .react("🤔")
-      .catch(bot.log.error("Ask: Error fetching new QOTD!"))
-      .then(bot.log.debug("Fetching new QOTD..."));
-  }
+      .catch(console.error("Ask: Error fetching new QOTD!"))
+      .then(console.debug("Fetching new QOTD..."));
 
-  try {
     const browser = await puppeteer.launch({
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
+
     const page = await browser.newPage();
+    await page.setDefaultNavigationTimeout(0);
     await page.goto(config.qotdURL);
 
     const things = await page.$$(".scrollerItem:not(.Blank)");
+
     const questions = [];
 
     for (const thing of things) {
@@ -94,13 +92,13 @@ const ask = async (msg, bot) => {
       DatabaseController.questionExists(question)
         .then(async function (result) {
           if (result) {
-            bot.log.debug(
+            console.log.debug(
               "QOTD already asked. Moving to next ask attempt using scrape."
             );
             await browser.close();
             return scrape(msg);
           } else {
-            bot.log.debug("New QOTD being asked. Writing to storage.");
+            console.debug("New QOTD being asked. Writing to storage.");
             DatabaseController.addQuestion(question).catch(console.dir);
 
             const qotdMsg = new MessageEmbed()
@@ -118,7 +116,7 @@ const ask = async (msg, bot) => {
               msg
                 .react("✅")
                 .catch(console.dir)
-                .then(bot.log.debug("Fetched QOTD successfully!"));
+                .then(console.debug("Fetched QOTD successfully!"));
               msg.channel.send(qotdMsg);
             }
 
@@ -128,7 +126,7 @@ const ask = async (msg, bot) => {
         .catch(console.dir)
     );
   } catch (err) {
-    bot.log.error("ask error:", err);
+    console.error("ask error:", err);
   }
 };
 
