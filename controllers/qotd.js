@@ -106,14 +106,12 @@ const ask = async (msg) => {
               .setTitle("Question Of The Day")
               .setDescription(question);
 
-            if (msg.channel.id === config.channels.qotd) {
-              msg.reactions.removeAll();
-              msg
-                .react("✅")
-                .catch(console.dir)
-                .then(console.debug("Fetched QOTD successfully!"));
-              msg.channel.send(qotdMsg);
-            }
+            msg.reactions.removeAll();
+            msg
+              .react("✅")
+              .catch(console.dir)
+              .then(console.debug("Fetched QOTD successfully!"));
+            msg.channel.send(qotdMsg);
 
             await browser.close();
           }
