@@ -9,7 +9,7 @@ const listen = (msg, bot) => {
       (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
     );
 
-  if (!command)
+  if (commandName && !command)
     return msg.reply(
       "I don't currently support this command. Try !help to get a list of commands I support."
     );
