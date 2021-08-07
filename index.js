@@ -15,12 +15,16 @@ bot.cooldowns = new Collection();
 bot.log = new createLogger({
   level: "debug",
   format: format.combine(format.json(), format.timestamp()),
-  defaultMeta: { service: "user-service" },
+  defaultMeta: { service: "bot-service" },
+  exitOnError: false,
   transports: [
     new transports.File({ filename: "logs/error.log", level: "error" }),
     new transports.File({ filename: "logs/info.log", level: "info" }),
     new transports.File({ filename: "logs/debug.log", level: "debug" }),
   ],
+  exceptionHandlers: [
+    new transports.File({ filename: 'logs/exceptions.log' })
+  ]
 });
 
 if (process.env.NODE_ENV !== "production") {
