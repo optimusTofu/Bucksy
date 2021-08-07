@@ -20,14 +20,14 @@ module.exports = {
     if (roleName === "") return;
 
     if (existingRole) {
-      if (msg.member.roles.cache.some((role) => role.name === roleName)) {
+      if (user.roles.cache.some((role) => role.name === roleName)) {
         roleMsg = new MessageEmbed()
           .setColor(0xef2d19)
           .setTitle(
-            `${msg.member.user.tag} You already have the **${roleName}** role.`
+            `${user.user.tag} You already have the **${roleName}** role.`
           );
       } else {
-        if (Object.keys(teams).includes(roleName)) {
+        if (teams.includes(roleName)) {
           removeTeam(msg);
         }
 
@@ -35,13 +35,13 @@ module.exports = {
         roleMsg = new MessageEmbed()
           .setColor(0x7fdf37)
           .setTitle(
-            `${msg.member.user.tag} You now have the **${roleName}** role.`
+            `${user.user.tag} You now have the **${roleName}** role.`
           );
       }
     } else {
       roleMsg = new MessageEmbed()
         .setColor(0xef2d19)
-        .setTitle(`${msg.member.user.tag} That role is not self-assignable.`);
+        .setTitle(`${user.user.tag} That role is not self-assignable.`);
     }
 
     msg.channel.send(roleMsg);

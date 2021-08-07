@@ -1,6 +1,4 @@
 const { MessageEmbed } = require("discord.js");
-const { teams } = require("../../config.json");
-const { removeTeam } = require("../../util/removeTeam.js");
 
 module.exports = {
   name: "want",
@@ -9,7 +7,6 @@ module.exports = {
   guildOnly: true,
   args: true,
   execute(msg, args) {
-
     const pokemonName = args[0].toLowerCase();
     const pokemon = msg.guild.roles.cache.find(
       (role) => role.name === pokemonName
@@ -24,20 +21,16 @@ module.exports = {
         pokemonMsg = new MessageEmbed()
           .setColor(0x7fdf37)
           .setTitle(
-            `${msg.member.user.tag} You already have the **${pokemonName}** role.`
+            `${user.user.tag} You already have the **${pokemonName}** role.`
           );
 
         msg.channel.send(pokemonMsg);
       } else {
-        // if (Object.keys(teams).includes(pokemonName)) {
-        //   removeTeam(msg);
-        // }
-
         user.roles.add(pokemon).catch(console.error);
         pokemonMsg = new MessageEmbed()
           .setColor(0x7fdf37)
           .setTitle(
-            `${msg.member.user.tag} You now have the **${pokemonName}** role.`
+            `${user.user.tag} You now have the **${pokemonName}** role.`
           );
 
         msg.channel.send(pokemonMsg);
