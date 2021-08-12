@@ -158,6 +158,25 @@ const shinyExists = async function (pokemon) {
   }
 };
 
+const getShinies = async function () {
+  const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  try {
+    await client.connect();
+    const db = client.db(config.mongoDBName);
+    const shinies = db.collection("shinies");
+    const result = await shinies.find({}).toArray();
+    const filtered_result = result.map((data) => { return data.title; }).join(', ');
+
+    return filtered_result;
+  } finally {
+    await client.close();
+  }
+};
+
 const questionExists = async function (question) {
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
@@ -182,6 +201,7 @@ module.exports = {
   addUser,
   addQuestion,
   removeShiny,
+  getShinies,
   getBalance,
   updateBalance,
   userExists,
