@@ -17,9 +17,11 @@
     "tesseract.js": "^2.1.4"
   },
   "devDependencies": {
+    "@google-cloud/dialogflow": "^4.1.4",
     "eslint": "^7.23.0",
     "eslint-config-prettier": "^8.1.0",
     "prettier": "2.2.1",
+    "uuid": "^8.3.2",
     "winston": "^3.3.3"
   },
   "scripts": {
