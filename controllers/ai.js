@@ -23,7 +23,7 @@ const axios_joke_instance = axios.create({
 const think = async (msg) => {
   if (msg.author.bot) return;
   const text = msg.content;
-  const projectId = 'jarvis-ihacpt';
+  const projectId = process.env.DIALOGFLOW_PROJECT_ID;
   const sessionId = uuid.v4();
   const sessionClient = new dialogflow.SessionsClient();
   const sessionPath = sessionClient.projectAgentSessionPath(projectId, sessionId);
