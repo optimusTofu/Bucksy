@@ -9,6 +9,6 @@ module.exports = {
     qotdController.start(bot);
     guessController.start(bot);
     // triviaController.start(bot);
-    bot.log.debug(`Logged in as ${bot.user.tag} - ${bot.user.username}!`);
+    console.debug(`Logged in as ${bot.user.tag} - ${bot.user.username}!`);
   },
 };
