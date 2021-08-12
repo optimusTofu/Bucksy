@@ -1,6 +1,7 @@
 # application runtime files
 .env
 config.json
+service.json
 
 # winston generated logs
 logs/
