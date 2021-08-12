@@ -2,10 +2,10 @@ const aiController = require("../controllers/ai.js");
 const commandController = require("../controllers/command.js");
 const guessController = require("../controllers/guess.js");
 const notifyController = require("../controllers/notify.js");
-const triviaController = require("../controllers/trivia.js");
-const ocrController = require("../controllers/ocr.js");
+// const triviaController = require("../controllers/trivia.js");
+// const ocrController = require("../controllers/ocr.js");
 const { prefixExists } = require("../util/prefixExists.js");
-const { isImage } = require("../util/isImage.js");
+// const { isImage } = require("../util/isImage.js");
 
 module.exports = {
   name: "message",
@@ -19,7 +19,7 @@ module.exports = {
     ) {
       notifyController.pokemon(msg, bot);
     } else if (msg.channel.id === bot.config.channels.ai.id) {
-      aiController.listen(msg, bot);
+      aiController.listen(msg);
     } else if (msg.channel.id === bot.config.channels.guess.id) {
       guessController.listen(msg, bot);
     // eslint-disable-next-line no-inline-comments
