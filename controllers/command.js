@@ -70,7 +70,7 @@ const listen = (msg, bot) => {
   try {
     command.execute(msg, args);
   } catch (error) {
-    bot.log.error(error);
+    console.error(error);
     msg.reply("Oops! I am having trouble executing that command.");
   }
 };

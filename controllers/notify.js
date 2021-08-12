@@ -14,7 +14,7 @@ module.exports = {
       );
 
       if (pokemonRole) {
-        bot.log.debug(
+        console.debug(
           "Found matching Hoppip post to existing role. Notifying users.",
           pokemonName
         );

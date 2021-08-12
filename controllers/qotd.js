@@ -33,11 +33,11 @@ const scrape = async (bot) => {
       DatabaseController.questionExists(question)
         .then(async function (result) {
           if (result) {
-            bot.log.debug("QOTD already asked. Moving to next scrape attempt.");
+            console.debug("QOTD already asked. Moving to next scrape attempt.");
             await browser.close();
             return scrape(bot);
           } else {
-            bot.log.debug("New QOTD being asked. Writing to storage.");
+            console.debug("New QOTD being asked. Writing to storage.");
             DatabaseController.addQuestion(question).catch(console.dir);
 
             const guild = bot.guilds.cache.get(config.guildID);
@@ -54,7 +54,7 @@ const scrape = async (bot) => {
         .catch(console.dir)
     );
   } catch (err) {
-    bot.log.error("scrape error: ", err);
+    console.error("scrape error: ", err);
   }
 };
 
@@ -127,11 +127,11 @@ const start = (bot) => {
   const job = new CronJob(
     config.qotdTime,
     function () {
-      bot.log.debug("ticked QOTD timer");
+      console.debug("ticked QOTD timer");
       scrape(bot);
     },
     function (err) {
-      bot.log.error("qotd start error:", err);
+      console.error("qotd start error:", err);
       scrape(bot);
     },
     false,

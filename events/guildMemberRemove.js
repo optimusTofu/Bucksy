@@ -5,6 +5,6 @@ module.exports = {
   once: false,
   execute(member, bot) {
     greetingController.sayGoodbye(member, bot);
-    bot.log.info(`Sending a warm greeting to new user: ${member}`);
+    console.info(`Sending a warm greeting to new user: ${member}`);
   },
 };

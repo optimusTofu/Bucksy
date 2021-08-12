@@ -33,8 +33,8 @@ const sayHello = function (member, bot) {
               const valor = guild.roles.cache.find(
                 (role) => role.name === "valor"
               );
-              member.roles.add(valor).catch(bot.log.error);
-              member.roles.add(verified).catch(bot.log.error);
+              member.roles.add(valor).catch(console.error);
+              member.roles.add(verified).catch(console.error);
               msg.channel.send(
                 `${member.user.tag}, you now have the valor role`
               );
@@ -42,8 +42,8 @@ const sayHello = function (member, bot) {
               const instinct = guild.roles.cache.find(
                 (role) => role.name === "instinct"
               );
-              member.roles.add(instinct).catch(bot.log.error);
-              member.roles.add(verified).catch(bot.log.error);
+              member.roles.add(instinct).catch(console.error);
+              member.roles.add(verified).catch(console.error);
               msg.channel.send(
                 `${member.user.tag}, you now have the instinct role`
               );
@@ -51,8 +51,8 @@ const sayHello = function (member, bot) {
               const mystic = guild.roles.cache.find(
                 (role) => role.name === "mystic"
               );
-              member.roles.add(mystic).catch(bot.log.error);
-              member.roles.add(verified).catch(bot.log.error);
+              member.roles.add(mystic).catch(console.error);
+              member.roles.add(verified).catch(console.error);
               msg.channel.send(
                 `${member.user.tag}, you now have the mystic role`
               );
@@ -65,7 +65,7 @@ const sayHello = function (member, bot) {
         });
     })
     .catch(function (e) {
-      bot.log.error("Something went wrong.", e);
+      console.error("Something went wrong.", e);
     });
 };
 
@@ -78,7 +78,7 @@ const sayGoodbye = function (member, bot) {
       msg.react("👎");
     })
     .catch(function () {
-      bot.log.error("Something went wrong.");
+      console.error("Something went wrong.");
     });
 };
 

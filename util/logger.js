@@ -5,7 +5,8 @@ const Logger = require("winston");
 Logger.remove(Logger.transports.Console);
 
 Logger.add(new Logger.transports.Console, {
-    colorize: true
+    colorize: true,
+    handleExceptions: true
 });
 
 Logger.level = "debug";
