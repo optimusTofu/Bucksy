@@ -1,4 +1,5 @@
 const { MessageEmbed } = require("discord.js");
+const { modRoles } = require("../../config.json");
 
 module.exports = {
   name: "want",
@@ -12,9 +13,11 @@ module.exports = {
       (role) => role.name === pokemonName
     );
     const user = msg.member;
+    const isModRole = modRoles.indexOf(pokemonName) > -1 ? true : false;
+
     let pokemonMsg;
 
-    if (pokemonName === "") return;
+    if (pokemonName === "" || isModRole) return;
 
     if (pokemon) {
       if (user.roles.cache.some((role) => role.name === pokemonName)) {

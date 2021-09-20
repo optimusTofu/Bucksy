@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { teams } = require("../../config.json");
+const { modRoles, teams } = require("../../config.json");
 const { removeTeam } = require("../../util/removeTeam.js");
 
 module.exports = {
@@ -15,9 +15,11 @@ module.exports = {
       (role) => role.name === roleName
     );
     const user = msg.member;
+    const isModRole = modRoles.indexOf(roleName) > -1 ? true : false;
+
     let roleMsg;
 
-    if (roleName === "") return;
+    if (roleName === "" || isModRole) return;
 
     if (existingRole) {
       if (user.roles.cache.some((role) => role.name === roleName)) {
