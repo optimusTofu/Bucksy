@@ -19,7 +19,16 @@ module.exports = {
 
     let roleMsg;
 
-    if (roleName === "" || isModRole) return;
+    if (roleName === "") return;
+
+    if (isModRole) {
+      roleMsg = new MessageEmbed()
+        .setColor(0xef2d19)
+        .setTitle(`I'm sorry, ${user.user.tag}. I'm afraid I can't do that.`);
+      
+      msg.channel.send(roleMsg);
+      return;
+    }
 
     if (existingRole) {
       if (user.roles.cache.some((role) => role.name === roleName)) {

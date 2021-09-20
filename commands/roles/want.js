@@ -17,7 +17,16 @@ module.exports = {
 
     let pokemonMsg;
 
-    if (pokemonName === "" || isModRole) return;
+    if (pokemonName === "") return;
+
+    if (isModRole) {
+      pokemonMsg = new MessageEmbed()
+        .setColor(0xef2d19)
+        .setTitle(`I'm sorry, ${user.user.tag}. I'm afraid I can't do that.`);
+      
+      msg.channel.send(pokemonMsg);
+      return;
+    }
 
     if (pokemon) {
       if (user.roles.cache.some((role) => role.name === pokemonName)) {
