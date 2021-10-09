@@ -44,24 +44,23 @@ const sendNewPokemonGuess = (bot) => {
             
             potrace.trace(response.data, params, function(err, svg) {
                 if (err) throw err;
-                fs.writeFileSync('./assets/img/wtp/output.svg', svg);
+                fs.writeFileSync(`./assets/img/wtp/${current_pokemon.name}.svg`, svg);
 
 
-                sharp('./assets/img/wtp/output.svg')
+                sharp(`./assets/img/wtp/${current_pokemon.name}.svg`)
                     .png()
-                    .toFile('./assets/img/wtp/out.png')
+                    .toFile(`./assets/img/wtp/${current_pokemon.name}.png`)
                     .then(info => {
-
                         const guessEmbed = new MessageEmbed()
                             .setAuthor("Who's That Pokémon?")
                             .setColor(0x00AE86)
                             .setDescription("Type which pokémon you think this is to get some <:pokecoin:577641216775028747>.")
-                            .setThumbnail("attachment://out.png");
+                            .setThumbnail(`attachment://${current_pokemon.name}.png`);
 
                         answered = false;
                         active = true;
 
-                        channel.send({embed: guessEmbed, files: ['./assets/img/wtp/out.png']});
+                        channel.send({embed: guessEmbed, files: [`./assets/img/wtp/${current_pokemon.name}.png`]});
                         console.log(info);
                     })
                     .catch(err => { console.error(err); });
