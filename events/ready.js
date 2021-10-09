@@ -1,4 +1,4 @@
-const guessController = require("../controllers/guess.js");
+const wtpController = require("../controllers/wtp.js");
 const qotdController = require("../controllers/qotd.js");
 // const triviaController = require("../controllers/trivia.js");
 
@@ -7,7 +7,7 @@ module.exports = {
   once: true,
   execute(bot) {
     qotdController.start(bot);
-    guessController.start(bot);
+    wtpController.start(bot);
     // triviaController.start(bot);
     console.debug(`Logged in as ${bot.user.tag} - ${bot.user.username}!`);
   },
