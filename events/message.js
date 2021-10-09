@@ -1,6 +1,6 @@
 const aiController = require("../controllers/ai.js");
 const commandController = require("../controllers/command.js");
-const guessController = require("../controllers/guess.js");
+const wtpController = require("../controllers/wtp.js");
 const notifyController = require("../controllers/notify.js");
 // const triviaController = require("../controllers/trivia.js");
 // const ocrController = require("../controllers/ocr.js");
@@ -21,7 +21,7 @@ module.exports = {
     } else if (msg.channel.id === bot.config.channels.ai.id) {
       aiController.listen(msg);
     } else if (msg.channel.id === bot.config.channels.guess.id) {
-      guessController.listen(msg, bot);
+      wtpController.listen(msg, bot);
     // eslint-disable-next-line no-inline-comments
     } /* else if (msg.channel.id === bot.config.channels.trivia.id) {
       triviaController.listen(msg);
