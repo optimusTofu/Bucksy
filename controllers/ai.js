@@ -220,27 +220,18 @@ const think = async (msg) => {
   }
 
   if (get_joke_intent) {
-    const getNewJoke = async () => {
-        const { joke } = await axios_joke_instance.get("/any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit");
-        return joke;
-    };
-    const sendJoke = (joke) => {
-      console.log('sending joke', joke);
-      if (joke.type === 'twopart') {
-        msg.channel.send(joke.setup).then(() => {
-          setTimeout(() => {
-            msg.channel.send(joke.delivery);
-          }, 3000);
-        });
-      } else {
-        msg.channel.send(joke.joke);
-      }
-      return;
-    };
-    getNewJoke().then((joke) => {
-      console.log('got new joke', joke);
-      sendJoke(joke);
-    });
+    const { joke } = await axios_joke_instance.get("/any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit");
+    
+    if (joke.type === 'twopart') {
+      msg.channel.send(joke.setup).then(() => {
+        setTimeout(() => {
+          msg.channel.send(joke.delivery);
+        }, 3000);
+      });
+    } else {
+      msg.channel.send(joke.joke);
+    }
+    return;
   }
 
   const response = new Object();
