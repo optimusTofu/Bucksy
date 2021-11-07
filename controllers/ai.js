@@ -238,6 +238,7 @@ const think = async (msg) => {
       return;
     };
     getNewJoke().then((joke) => {
+      console.log('got new joke', joke);
       sendJoke(joke);
     });
   }
