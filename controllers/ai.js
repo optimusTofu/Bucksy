@@ -234,11 +234,11 @@ const think = async (msg) => {
       } else {
         msg.channel.send(joke.joke);
       }
+      return;
     };
     getNewJoke().then((joke) => {
       sendJoke(joke);
     });
-    return;
   }
 
   const response = new Object();
