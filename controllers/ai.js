@@ -225,6 +225,7 @@ const think = async (msg) => {
         return joke;
     };
     const sendJoke = (joke) => {
+      console.log('sending joke', joke);
       if (joke.type === 'twopart') {
         msg.channel.send(joke.setup).then(() => {
           setTimeout(() => {
