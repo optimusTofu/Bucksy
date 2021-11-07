@@ -16,7 +16,7 @@ const axios_instance = axios.create({
 });
 
 const axios_joke_instance = axios.create({
-  baseURL: "https://v2.jokeapi.dev/joke/",
+  baseURL: "https://v2.jokeapi.dev/joke",
   timeout: 3000,
 });
 
@@ -220,8 +220,8 @@ const think = async (msg) => {
   }
 
   if (get_joke_intent) {
-    const { joke } = await axios_joke_instance.get("/any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit");
-    
+    const { joke } = await axios_joke_instance.get("/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit");
+
     if (joke.type === 'twopart') {
       msg.channel.send(joke.setup).then(() => {
         setTimeout(() => {
@@ -233,6 +233,7 @@ const think = async (msg) => {
     }
     return;
   }
+
 
   const response = new Object();
   response.response_obj = response_obj;
