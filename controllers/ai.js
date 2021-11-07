@@ -15,11 +15,6 @@ const axios_instance = axios.create({
   timeout: 3000,
 });
 
-const axios_joke_instance = axios.create({
-  baseURL: "https://v2.jokeapi.dev/joke",
-  timeout: 3000,
-});
-
 const think = async (msg) => {
   if (msg.author.bot) return;
   const text = msg.content;
@@ -220,38 +215,31 @@ const think = async (msg) => {
   }
 
   if (get_joke_intent) {
-    const { joke } = await axios_joke_instance
-      .get("/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit")
-      .catch(function (error) {
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-        } else if (error.request) {
-          // The request was made but no response was received
-          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-          // http.ClientRequest in node.js
-          console.log(error.request);
+    axios.get("https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit").then((response) => {
+        console.log(response);
+
+        if (joke.type === 'twopart') {
+          msg.channel.send(joke.setup).then(() => {
+            setTimeout(() => {
+              msg.channel.send(joke.delivery);
+            }, 3000);
+          });
         } else {
-          // Something happened in setting up the request that triggered an Error
-          console.log('Error', error.message);
+          msg.channel.send(joke.joke);
         }
-        console.log(error.config);
-      });
+    });
 
-    console.log('got new joke', joke);
-
-    if (joke.type === 'twopart') {
-      msg.channel.send(joke.setup).then(() => {
-        setTimeout(() => {
-          msg.channel.send(joke.delivery);
-        }, 3000);
-      });
-    } else {
-      msg.channel.send(joke.joke);
-    }
+    // console.log('got new joke', joke);
+    //
+    // if (joke.type === 'twopart') {
+    //   msg.channel.send(joke.setup).then(() => {
+    //     setTimeout(() => {
+    //       msg.channel.send(joke.delivery);
+    //     }, 3000);
+    //   });
+    // } else {
+    //   msg.channel.send(joke.joke);
+    // }
     return;
   }
 
