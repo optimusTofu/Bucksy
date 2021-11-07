@@ -216,7 +216,7 @@ const think = async (msg) => {
 
   if (get_joke_intent) {
     axios.get("https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit").then((response) => {
-        console.log(response);
+        let joke = response.data;
 
         if (joke.type === 'twopart') {
           msg.channel.send(joke.setup).then(() => {
@@ -228,18 +228,6 @@ const think = async (msg) => {
           msg.channel.send(joke.joke);
         }
     });
-
-    // console.log('got new joke', joke);
-    //
-    // if (joke.type === 'twopart') {
-    //   msg.channel.send(joke.setup).then(() => {
-    //     setTimeout(() => {
-    //       msg.channel.send(joke.delivery);
-    //     }, 3000);
-    //   });
-    // } else {
-    //   msg.channel.send(joke.joke);
-    // }
     return;
   }
 
