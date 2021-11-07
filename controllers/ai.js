@@ -16,7 +16,7 @@ const axios_instance = axios.create({
 });
 
 const axios_joke_instance = axios.create({
-  baseURL: "https://official-joke-api.appspot.com/",
+  baseURL: "https://v2.jokeapi.dev/joke/",
   timeout: 3000,
 });
 
@@ -169,8 +169,8 @@ const think = async (msg) => {
         " "
       );
       const type_effectiveness_word = result.outputContexts[0].parameters.fields["type_effectiveness.original"].listValue.values;
-      const pokemon_type_comes_first = result.queryText.indexOf(pokemon_type) < result.queryText.indexOf(type_effectiveness_word) ? 
-        true : 
+      const pokemon_type_comes_first = result.queryText.indexOf(pokemon_type) < result.queryText.indexOf(type_effectiveness_word) ?
+        true :
         false;
       const exempt_words = [
         "resistant",
@@ -209,7 +209,7 @@ const think = async (msg) => {
 
       const damage_relations = output.data.damage_relations[type_effectiveness].length > 0 ? output.data.damage_relations[type_effectiveness].map((item) => item.name).join(", ") : "none";
       const nature_of_damage = from_or_to === "from" ? "receives" : "inflicts";
-      const fulfillmentText = nature_of_damage === "inflicts" ? 
+      const fulfillmentText = nature_of_damage === "inflicts" ?
         `${pokemon_type} type inflicts ${type_effectiveness_formatted} ${damage_relations} type` :
         `${pokemon_type} ${nature_of_damage} ${type_effectiveness_formatted} the following: ${damage_relations}`;
 
@@ -220,19 +220,31 @@ const think = async (msg) => {
   }
 
   if (get_joke_intent) {
-    const { data } = await axios_joke_instance.get("/random_joke");
-    msg.channel.send(data.setup).then(() => {
-      setTimeout(() => {
-        msg.channel.send(data.punchline);
-      }, 3000);
+    const getNewJoke = async () => {
+        const { joke } = await axios_joke_instance.get("/any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit");
+        return joke;
+    };
+    const sendJoke = (joke) => {
+      if (joke.type === 'twopart') {
+        msg.channel.send(joke.setup).then(() => {
+          setTimeout(() => {
+            msg.channel.send(joke.delivery);
+          }, 3000);
+        });
+      } else {
+        msg.channel.send(joke.joke);
+      }
+    };
+    getNewJoke().then((joke) => {
+      sendJoke(joke);
     });
     return;
   }
 
   const response = new Object();
   response.response_obj = response_obj;
-  response.msg = msg; 
-  response.pokemon = pokemon; 
+  response.msg = msg;
+  response.pokemon = pokemon;
   response.result = result;
 
   return response;
