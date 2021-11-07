@@ -41,7 +41,7 @@ const sendNewPokemonGuess = (bot) => {
                 curve:      "0.5",
                 color:      "black",
             };
-            
+
             potrace.trace(response.data, params, function(err, svg) {
                 if (err) throw err;
                 fs.writeFileSync(`./assets/img/wtp/${current_pokemon.name}.svg`, svg);
@@ -61,7 +61,6 @@ const sendNewPokemonGuess = (bot) => {
                         active = true;
 
                         channel.send({embed: guessEmbed, files: [`./assets/img/wtp/${current_pokemon.name}.png`]});
-                        console.log(info);
                     })
                     .catch(err => { console.error(err); });
             });
