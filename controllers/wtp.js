@@ -54,7 +54,7 @@ const sendNewPokemonGuess = (bot) => {
                         const guessEmbed = new MessageEmbed()
                             .setAuthor("Who's That Pokémon?")
                             .setColor(0x00AE86)
-                            .setDescription("Type which pokémon you think this is to get some <:pokecoin:577641216775028747>.")
+                            .setDescription(`Type which pokémon you think this is to get some ${config.emojis.pokecoin}.`)
                             .setThumbnail(`attachment://${current_pokemon.name}.png`);
 
                         answered = false;
