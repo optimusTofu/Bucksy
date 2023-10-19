@@ -3,12 +3,12 @@ module.exports = {
     const embed = msg.embeds[0];
 
     if (embed) {
-      const text = embed.description;
-      const pokemonName = text.split(" ")[0].toLowerCase();
+      const text = embed.title;
+      const pokemonName = text.split("|")[0].toLowerCase().trim();
       const pokemonRole = msg.guild.roles.cache.find((role) =>
         pokemonName.startsWith(role.name.toLowerCase())
       );
-      const locationName = embed.title.toLowerCase();
+      const locationName = text.split("|")[2].toLowerCase().trim();
       const locationRole = msg.guild.roles.cache.find((role) =>
         locationName.startsWith(role.name.toLowerCase())
       );
